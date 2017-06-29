@@ -23,14 +23,17 @@
 
 ### Used as a shortcut command
 `pppp -sn'localmysql' -e'mysql -uroot -p' -p'root'`
+
 `pppp localmysql`
 
 ### Used as a password manager
 `pppp -sn'githubcom' -e'open https://github.com/gengxiankun' -u'ge2x3k2@gmail' -p'xxxxxxxx'`
+
 `pppp githubcom`
 
 ### Used as a line even if the code is pulled
 `pppp -sn'codepull' -e"ssh root@2222.222.22.22 cd /codepath/code/;git pull"`
+
 `pppp codepull`
 
 ### There are more welcome to add ….
