@@ -1,96 +1,93 @@
-#!/bin/bash
-# pppp
+#!/usr/bin/env bash
+#
+# Use script to manage your small pieces of command, so that your command configuration modular,
+# skilled use of shell orders will have a better performance, efficient, safe, easier to use.
+# for MacOS/*unix
+#
 # @author <ge2x3k2@gmail.com>
 # @time 2017-06-29
 # @version 1.0
 
+#set -x
+# Read the command configuration file
 config_path='/etc/pppp/pppp.conf'
 
-if [[ ! -f $config_path ]]; then
-	echo 2>&1 "final: 配置文件pppp.conf不存在！"
-	exit 2
-fi
+# There must be a parameter
+if [[ $# == 0 ]]; then echo -e "failed: because there is no parameter that leads to failure.\nuse 'pppp -l' View the available parameters";exit 1; fi
 
+# The configuration file must exist
+if [[ ! -f $config_path ]]; then echo 2>&1 "final: '/ect/pppp/pppp.conf' does not exist."; exit 2; fi
+
+# Read
 source $config_path
 
-while getopts "slhn:ap:e:" arg #选项后面的冒号表示该选项需要参数
+# getopts parameter analysis
+while getopts "slhvu:n:ap:e:" arg
 do
         case $arg in
-            s)
-                pppp_save=1
-                ;;
-            n)
-				pppp_name="${OPTARG}"
-				;;
-			e)
-				pppp_exec="${OPTARG}"
-				;;
-            a)
-				pppp_safe=1
-                ;;
-            p)
-				pppp_password="${OPTARG}"
-				;;
-			l)
-				less ${config_path}
-				exit 0;
-				;;
-			h)
-				exit 0;
-				;;
-            ?)
-	            echo "unkonw argument"
-		        exit 1
-		        ;;
+        	# Execute the save operation
+            s) pppp_save=1 ;;
+			# name
+            n) pppp_name="${OPTARG}" ;;
+			# Name the call to the command
+			e) pppp_exec="${OPTARG}" ;;
+			# turn on safe mode
+            a) pppp_safe=1 ;;
+			# Account, present is displayed
+            u) pppp_user="${OPTARG}" ;;
+			# Password, present is displayed
+            p) pppp_password="${OPTARG}" ;;
+			l) less ${config_path}; exit 0 ;;
+			v) echo "version: 1.0"; exit 0 ;;
+			h) exit 0 ;;
+            ?) echo "unkonw argument"; exit 1 ;;
         esac
 done
 
-_filling_file ()
-{
+# Save the operation of the command
+_filling_file () {
 	if [[ -z ${pppp_save} ]]; then	return 0; fi
 
-	if [[ -z ${pppp_name} && -z ${pppp_exec} ]]; then echo -e "failed: 'pppp -s' requires at least '-e' and '-n' two parameters\nSee 'pppp -h'";exit 1; fi
+	if [[ -z ${pppp_name} || -z ${pppp_exec} ]]; then echo -e "failed: 'pppp -s' requires at least '-e' and '-n' two parameters\nSee 'pppp -h'";exit 1; fi
 
-	echo "" >> ${config_path}
 	echo "# [${pppp_name}]" >> ${config_path}
 	echo "${pppp_name}_exec='${pppp_exec}'" >> ${config_path}
+
+	if [[ ! -z ${pppp_user} ]]; then echo "${pppp_name}_user='${pppp_user}'" >> ${config_path}; fi
 
 	if [[ ! -z ${pppp_password} ]]; then echo "${pppp_name}_password='${pppp_password}'" >> ${config_path}; fi
 
 	if [[ ! -z ${pppp_safe} ]]; then echo "${pppp_name}_safe=1" >> ${config_path}; fi
 
-	exit 0
+	echo "" >> ${config_path}; exit 0
 }
 
 _filling_file
 
-_safe ()
-{
+# Safe mode
+_safe () {
 	read -n 1 -p 'the above statement will be executed, please approve[y/n]: ' state
 	echo ""
 	if [[ $state != 'y' ]]; then
 		echo "bye.."
 		exit 0
 	fi
+	echo -e "info: ${!eeec}"
 }
 
-_eeec () 
-{
+# Execute named commands
+_eeec () {
 	local eeec=$1_exec
+	if [[ -z ${!eeec} ]]; then echo -e "failed: there is no viable command for this parameter\nuse the 'pppp -sn -e' command to add";exit 1; fi
+
+	local user=$1_user
 	local password=$1_password
 	local safe=$1_safe
 
-	echo -e "info: ${!eeec}"
-	if [[ ${!safe} == '1' ]]; then
-		_safe
-	fi
+	if [[ ${!safe} == '1' ]]; then _safe; fi
 
-	echo "In the implementation, please wait ..."
-
-	if [[ ! -z ${!password} ]]
-	then
-		echo -e "password:  \033[41;36m${!password}\033[0m"
-	fi
+	if [[ ! -z ${!user} ]]; then echo -e "user:      ${!user}"; fi
+	if [[ ! -z ${!password} ]]; then echo -e "password:  \033[41;36m${!password}\033[0m"; fi
 
 	${!eeec}
 	return 0
@@ -98,3 +95,5 @@ _eeec ()
 
 _eeec $1
 exit 0
+
+# End of file for pppp
