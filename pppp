@@ -1,0 +1,100 @@
+#!/bin/bash
+# pppp
+# @author <ge2x3k2@gmail.com>
+# @time 2017-06-29
+# @version 1.0
+
+config_path='/etc/pppp/pppp.conf'
+
+if [[ ! -f $config_path ]]; then
+	echo 2>&1 "final: 配置文件pppp.conf不存在！"
+	exit 2
+fi
+
+source $config_path
+
+while getopts "slhn:ap:e:" arg #选项后面的冒号表示该选项需要参数
+do
+        case $arg in
+            s)
+                pppp_save=1
+                ;;
+            n)
+				pppp_name="${OPTARG}"
+				;;
+			e)
+				pppp_exec="${OPTARG}"
+				;;
+            a)
+				pppp_safe=1
+                ;;
+            p)
+				pppp_password="${OPTARG}"
+				;;
+			l)
+				less ${config_path}
+				exit 0;
+				;;
+			h)
+				exit 0;
+				;;
+            ?)
+	            echo "unkonw argument"
+		        exit 1
+		        ;;
+        esac
+done
+
+_filling_file ()
+{
+	if [[ -z ${pppp_save} ]]; then	return 0; fi
+
+	if [[ -z ${pppp_name} && -z ${pppp_exec} ]]; then echo -e "failed: 'pppp -s' requires at least '-e' and '-n' two parameters\nSee 'pppp -h'";exit 1; fi
+
+	echo "" >> ${config_path}
+	echo "# [${pppp_name}]" >> ${config_path}
+	echo "${pppp_name}_exec='${pppp_exec}'" >> ${config_path}
+
+	if [[ ! -z ${pppp_password} ]]; then echo "${pppp_name}_password='${pppp_password}'" >> ${config_path}; fi
+
+	if [[ ! -z ${pppp_safe} ]]; then echo "${pppp_name}_safe=1" >> ${config_path}; fi
+
+	exit 0
+}
+
+_filling_file
+
+_safe ()
+{
+	read -n 1 -p 'the above statement will be executed, please approve[y/n]: ' state
+	echo ""
+	if [[ $state != 'y' ]]; then
+		echo "bye.."
+		exit 0
+	fi
+}
+
+_eeec () 
+{
+	local eeec=$1_exec
+	local password=$1_password
+	local safe=$1_safe
+
+	echo -e "info: ${!eeec}"
+	if [[ ${!safe} == '1' ]]; then
+		_safe
+	fi
+
+	echo "In the implementation, please wait ..."
+
+	if [[ ! -z ${!password} ]]
+	then
+		echo -e "password:  \033[41;36m${!password}\033[0m"
+	fi
+
+	${!eeec}
+	return 0
+}
+
+_eeec $1
+exit 0
