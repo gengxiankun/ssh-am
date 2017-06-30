@@ -6,7 +6,7 @@
 #
 # @author <ge2x3k2@gmail.com>
 # @time 2017-06-29
-# @version 1.2
+# @version 1.3
 
 #set -x
 # Read the command configuration file
@@ -15,8 +15,19 @@ config_path='/etc/pppp/pppp.conf'
 # There must be a parameter
 if [[ $# == 0 ]]; then echo -e "failed: because there is no parameter that leads to failure.\nuse 'pppp -l' View the available parameters";exit 1; fi
 
+# The configuration dir must exist
+if [[ ! -d ${config_path%%pppp.conf} ]]; then
+	echo "initialization: mkdir -vp ${config_path%%pppp.conf}"
+	mkdir -vp ${config_path%%pppp.conf}
+fi
 # The configuration file must exist
-if [[ ! -f $config_path ]]; then echo 2>&1 "final: '/ect/pppp/pppp.conf' does not exist."; exit 2; fi
+if [[ ! -f ${config_path} ]]; then
+	echo "initialization: touch ${config_path}"
+	touch ${config_path}
+	echo "#pppp.conf" >> ${config_path}
+	echo "" >> ${config_path}
+	echo "Initialized successfully."
+fi
 
 # Read
 source $config_path
@@ -31,6 +42,7 @@ _getHelp () {
 	echo "	pppp -p password, present is displayed"
 	echo "	pppp -d delete an existing command"
 	echo "	pppp -l show the configuration file"
+	echo "	pppp -f find for related configurations based on clues(-f'clues')"
 	echo ""
 	echo "  	directly called the command to execute the formation, specified in the -e"
 	echo ""
@@ -38,7 +50,7 @@ _getHelp () {
 }
 
 # getopts parameter analysis
-while getopts "slhvd:u:n:ap:e:" arg
+while getopts "slhvabd:u:n:p:e:f:" arg
 do
         case $arg in
             # Execute the save operation
@@ -54,8 +66,15 @@ do
             # Password, present is displayed
             p) pppp_password="${OPTARG}" ;;
 	    d) pppp_delete="${OPTARG}" ;;
+	    # alias
+	    b) ;;
+	    # find
+	    f) pppp_find="${OPTARG}" ;;
+	    # list config
 	    l) less ${config_path}; exit 0 ;;
-	    v) echo "version: 1.2";echo "link:    https://github.com/gengxiankun/pppp"; exit 0 ;;
+	    # show version
+	    v) echo "version: 1.3";echo "link:    https://github.com/gengxiankun/pppp"; exit 0 ;;
+	    # show help docs
 	    h) _getHelp; exit 0 ;;
             ?) echo "unkonw argument"; exit 1 ;;
         esac
@@ -72,7 +91,12 @@ _delete () {
 	exit 0
 }
 
-_delete
+# find
+_find () {
+	sed -n "/${pppp_find}/p" ${config_path}
+	exit 0
+}
+
 
 # Save the operation of the command
 _filling_file () {
@@ -89,10 +113,13 @@ _filling_file () {
 
 	if [[ ! -z ${pppp_safe} ]]; then echo "${pppp_name}_safe=1" >> ${config_path}; fi
 
-	echo "" >> ${config_path}; exit 0
-}
+	echo "" >> ${config_path}
 
-_filling_file
+	echo "..."
+	echo "create success."
+
+	exit 0
+}
 
 # Safe mode
 _safe () {
@@ -122,6 +149,14 @@ _eeec () {
 	${!eeec}
 	return 0
 }
+
+_filling_file
+
+_delete
+
+if [[ ! -z ${pppp_find} ]]; then
+	_find
+fi
 
 _eeec $1
 exit 0
