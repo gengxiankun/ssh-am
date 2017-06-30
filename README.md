@@ -19,6 +19,7 @@
 - -p password, present is displayed
 - -d delete an existing command
 - -l show the configuration file
+- -f find for related configurations based on clues(-f'clues')
 - directly called the command to execute the formation, specified in the -e
 
 ## example
