@@ -1,5 +1,7 @@
 # pppp
 
+> version 1.2
+
 > Use script to manage your small pieces of command, so that your command configuration modular, skilled use of shell orders will have a better performance, efficient, safe, easier to use.
 
 > for MacOS
