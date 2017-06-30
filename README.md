@@ -1,8 +1,9 @@
 # pppp
 
+> version 1.2 based on MacOS
+
 > Use script to manage your small pieces of command, so that your command configuration modular, skilled use of shell orders will have a better performance, efficient, safe, easier to use.
 
-> for MacOS
 
 ## install
 	cd /usr/local/
