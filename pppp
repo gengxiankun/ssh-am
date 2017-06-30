@@ -6,7 +6,7 @@
 #
 # @author <ge2x3k2@gmail.com>
 # @time 2017-06-29
-# @version 1.1
+# @version 1.2
 
 #set -x
 # Read the command configuration file
@@ -29,6 +29,7 @@ _getHelp () {
 	echo "	pppp -a  turn on safe mode"
 	echo "	pppp -u account, present is displayed"
 	echo "	pppp -p password, present is displayed"
+	echo "	pppp -d delete an existing command"
 	echo "	pppp -l show the configuration file"
 	echo ""
 	echo "  	directly called the command to execute the formation, specified in the -e"
@@ -52,12 +53,26 @@ do
             u) pppp_user="${OPTARG}" ;;
             # Password, present is displayed
             p) pppp_password="${OPTARG}" ;;
+	    d) pppp_delete="${OPTARG}" ;;
 	    l) less ${config_path}; exit 0 ;;
-	    v) echo "version: 1.1"; exit 0 ;;
+	    v) echo "version: 1.2"; exit 0 ;;
 	    h) _getHelp; exit 0 ;;
             ?) echo "unkonw argument"; exit 1 ;;
         esac
 done
+
+# elete an existing command
+_delete () {
+	if [[ -z ${pppp_delete} ]]; then return 0; fi
+	sed -i "" "/\[${pppp_delete}\]/d" ${config_path}
+	sed -i "" "/${pppp_delete}_exec/d" ${config_path}
+	sed -i "" "/${pppp_delete}_user/d" ${config_path}
+	sed -i "" "/${pppp_delete}_password/d" ${config_path}
+	sed -i "" "/${pppp_delete}_safe/d" ${config_path}
+	exit 0
+}
+
+_delete
 
 # Save the operation of the command
 _filling_file () {
