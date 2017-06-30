@@ -55,7 +55,7 @@ do
             p) pppp_password="${OPTARG}" ;;
 	    d) pppp_delete="${OPTARG}" ;;
 	    l) less ${config_path}; exit 0 ;;
-	    v) echo "version: 1.2"; exit 0 ;;
+	    v) echo "version: 1.2";echo "link:    https://github.com/gengxiankun/pppp"; exit 0 ;;
 	    h) _getHelp; exit 0 ;;
             ?) echo "unkonw argument"; exit 1 ;;
         esac
