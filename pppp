@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 #
-# Use script to manage your small pieces of command, so that your command configuration modular,
-# skilled use of shell orders will have a better performance, efficient, safe, easier to use.
-# for MacOS/*unix
+# management of paragraph scripts. version 1.3 based on MacOS
 #
 # @author <ge2x3k2@gmail.com>
 # @time 2017-06-29
@@ -37,12 +35,11 @@ _getHelp () {
 	echo "Usage:  pppp -s execute the save operation"
 	echo "	pppp -n name"
 	echo "	pppp -e name the call to the command"
-	echo "	pppp -a turn on safe mode"
+	echo "	pppp -a  turn on safe mode"
 	echo "	pppp -u account, present is displayed"
 	echo "	pppp -p password, present is displayed"
 	echo "	pppp -d delete an existing command"
 	echo "	pppp -l show the configuration file"
-	echo "	pppp -v view the version"
 	echo "	pppp -f find for related configurations based on clues(-f'clues')"
 	echo ""
 	echo "  	directly called the command to execute the formation, specified in the -e"
