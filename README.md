@@ -21,17 +21,17 @@
 ## example
 
 ### Used as a shortcut command
-`chaoswarrior -sn'localmysql' -e'mysql -uroot -p' -p'root'`
+`sudo chaoswarrior -sn'localmysql' -e'mysql -uroot -p' -p'root'`
 
 `chaoswarrior localmysql`
 
 ### Used as a password manager
-`chaoswarrior -sn'githubcom' -e'open https://github.com/gengxiankun' -u'ge2x3k2@gmail' -p'xxxxxxxx'`
+`sudo chaoswarrior -sn'githubcom' -e'open https://github.com/gengxiankun' -u'ge2x3k2@gmail' -p'xxxxxxxx'`
 
 `chaoswarrior githubcom`
 
 ### Used as a line even if the code is pulled
-`chaoswarrior -sn'codepull' -e"ssh root@2222.222.22.22 cd /codepath/code/;git pull"`
+`sudo chaoswarrior -sn'codepull' -e"ssh root@2222.222.22.22 cd /codepath/code/;git pull"`
 
 `chaoswarrior codepull`
 
