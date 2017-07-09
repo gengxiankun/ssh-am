@@ -1,12 +1,12 @@
-# pppp
+# chaoswarrior
 
 > management of paragraph scripts. version 1.3 based on MacOS
 
 
 ## install
 	cd /usr/local/
-	git clone https://github.com/gengxiankun/pppp.git
-	ln -s /usr/local/pppp/pppp /usr/local/bin
+	git clone https://github.com/gengxiankun/chaoswarrior.git
+	ln -s /usr/local/chaoswarrior/chaoswarrior /usr/local/bin
 
 ## params
 - -s execute the save operation
@@ -23,18 +23,18 @@
 ## example
 
 ### Used as a shortcut command
-`pppp -sn'localmysql' -e'mysql -uroot -p' -p'root'`
+`chaoswarrior -sn'localmysql' -e'mysql -uroot -p' -p'root'`
 
-`pppp localmysql`
+`chaoswarrior localmysql`
 
 ### Used as a password manager
-`pppp -sn'githubcom' -e'open https://github.com/gengxiankun' -u'ge2x3k2@gmail' -p'xxxxxxxx'`
+`chaoswarrior -sn'githubcom' -e'open https://github.com/gengxiankun' -u'ge2x3k2@gmail' -p'xxxxxxxx'`
 
-`pppp githubcom`
+`chaoswarrior githubcom`
 
 ### Used as a line even if the code is pulled
-`pppp -sn'codepull' -e"ssh root@2222.222.22.22 cd /codepath/code/;git pull"`
+`chaoswarrior -sn'codepull' -e"ssh root@2222.222.22.22 cd /codepath/code/;git pull"`
 
-`pppp codepull`
+`chaoswarrior codepull`
 
 ### There are more welcome to add ….
