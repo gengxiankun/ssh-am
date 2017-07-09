@@ -4,9 +4,7 @@
 
 
 ## install
-	cd /usr/local/
-	git clone https://github.com/gengxiankun/chaoswarrior.git
-	ln -s /usr/local/chaoswarrior/chaoswarrior /usr/local/bin
+	brew install chaoswarrior
 
 ## params
 - -s execute the save operation
