@@ -1,0 +1,181 @@
+#!/usr/bin/env bash
+# samurai champloo BASED ON MacOS.
+# @author <ge2x3k2@gmail.com>
+# @time 2017-06-29
+# @version 2.0
+
+# set -x
+# Read the command configuration file
+config_path='/etc/ploo/default.conf'
+# version number
+version_number=2.0
+# set profile
+profile_path='/Users/xiankun.geng/.bash_profile'
+
+# There must be a parameter
+if [[ $# == 0 ]]; then echo -e "failed: because there is no parameter that leads to failure.\nuse 'ploo -l' View the available parameters";exit 1; fi
+
+# The configuration dir must exist
+if [[ ! -d ${config_path%%default.conf} ]]; then
+	echo "initialization: mkdir -vp ${config_path%%default.conf}"
+	mkdir -vp ${config_path%%default.conf}
+fi
+# The configuration file must exist
+if [[ ! -f ${config_path} ]]; then
+	echo "initialization: touch ${config_path}"
+	touch ${config_path}
+	echo "#ploo.conf" >> ${config_path}
+	echo "" >> ${config_path}
+	echo "Initialized successfully."
+fi
+
+# Read
+source $config_path
+
+# help
+_getHelp () {
+	echo "Usage:  ploo -s execute the save operation"
+	echo "	ploo -n name"
+	echo "	ploo -e name the call to the command"
+	echo "	ploo -a  turn on safe mode"
+	echo "	ploo -u account, present is displayed"
+	echo "	ploo -p password, present is displayed"
+	echo "	ploo -d delete an existing command"
+	echo "	ploo -l show the configuration file"
+	echo "	ploo -f find for related configurations based on clues(-f'clues')"
+	echo ""
+	echo "  	directly called the command to execute the formation, specified in the -e"
+	echo ""
+	echo "Example: ploo -sn'name' -e'exec' -u'username' -p'password'"
+}
+
+# getopts parameter analysis
+while getopts "slhvabd:u:n:p:e:f:" arg
+do
+        case $arg in
+            # Execute the save operation
+            s) ploo_save=1 ;;
+	    # name
+            n) ploo_name="${OPTARG}" ;;
+      	    # Name the call to the command
+    	    e) ploo_exec="${OPTARG}" ;;
+	    # turn on safe mode
+            a) ploo_safe=1 ;;
+            # Account, present is displayed
+            u) ploo_user="${OPTARG}" ;;
+            # Password, present is displayed
+            p) ploo_password="${OPTARG}" ;;
+	    d) ploo_delete="${OPTARG}" ;;
+	    # alias
+	    b) ploo_alias=1 ;;
+	    # find
+	    f) ploo_find="${OPTARG}" ;;
+	    # list config
+	    l) less ${config_path}; exit 0 ;;
+	    # show version
+	    v) echo "version: ${version_number}"; exit 0 ;;
+	    # show help docs
+	    h) _getHelp; exit 0 ;;
+            ?) echo "unkonw argument"; exit 1 ;;
+        esac
+done
+
+# elete an existing command
+_delete () {
+	if [[ -z ${ploo_delete} ]]; then return 0; fi
+	sed -i "" "/\[${ploo_delete}\]/d" ${config_path}
+	sed -i "" "/${ploo_delete}_exec/d" ${config_path}
+	sed -i "" "/${ploo_delete}_user/d" ${config_path}
+	sed -i "" "/${ploo_delete}_password/d" ${config_path}
+	sed -i "" "/${ploo_delete}_safe/d" ${config_path}
+	exit 0
+}
+
+# find
+_find () {
+	sed -n "/${ploo_find}/p" ${config_path}
+	exit 0
+}
+
+
+# set alias
+_setAlias () {
+	echo "info: set the alias."
+	if [[ ! -f ${profile_path} ]]; then
+		ls ${profile_path}
+		echo "alias setting failed. because the '${profile_path}' file does not exist."
+		return 0
+	fi
+	echo "alias ${ploo_name}='ploo ${ploo_name}'" >> ${profile_path}
+	echo "info: the alias is set up successfully."
+	return 0
+}
+
+# Save the operation of the command
+_filling_file () {
+	if [[ -z ${ploo_save} ]]; then	return 0; fi
+
+	if [[ -z ${ploo_name} || -z ${ploo_exec} ]]; then echo -e "failed: 'ploo -s' requires at least '-e' and '-n' two parameters\nSee 'ploo -h'";exit 1; fi
+
+	echo "# [${ploo_name}]" >> ${config_path}
+	echo "${ploo_name}_exec='${ploo_exec}'" >> ${config_path}
+
+	if [[ ! -z ${ploo_user} ]]; then echo "${ploo_name}_user='${ploo_user}'" >> ${config_path}; fi
+
+	if [[ ! -z ${ploo_password} ]]; then echo "${ploo_name}_password='${ploo_password}'" >> ${config_path}; fi
+
+	if [[ ! -z ${ploo_safe} ]]; then echo "${ploo_name}_safe=1" >> ${config_path}; fi
+
+	echo "" >> ${config_path}
+
+	if [[ ! -z ${ploo_alias} ]]; then
+		_setAlias
+	fi
+
+	echo "..."
+	echo "create success."
+
+	exit 0
+}
+
+# Safe mode
+_safe () {
+	read -n 1 -p 'the above statement will be executed, please approve[y/n]: ' state
+	echo ""
+	if [[ $state != 'y' ]]; then
+		echo "bye.."
+		exit 0
+	fi
+	echo -e "info: ${!eeec}"
+}
+
+# Execute named commands
+_eeec () {
+	eeec=$1_exec
+	if [[ -z ${!eeec} ]]; then echo -e "failed: there is no viable command for this parameter\nuse the 'ploo -sn -e' command to add";exit 1; fi
+
+	local user=$1_user
+	local password=$1_password
+	local safe=$1_safe
+
+	if [[ ${!safe} == '1' ]]; then _safe; fi
+
+	if [[ ! -z ${!user} ]]; then echo -e "account:";echo "     ${!user}"; echo ""; fi
+	if [[ ! -z ${!password} ]]; then echo "${!password}" | pbcopy; echo "The password has been copied to the clipboard, directly 'CTRL V' paste."; fi
+
+	${!eeec}
+	return 0
+}
+
+_filling_file
+
+_delete
+
+if [[ ! -z ${ploo_find} ]]; then
+	_find
+fi
+
+_eeec $1
+exit 0
+
+# End of file for ploo
