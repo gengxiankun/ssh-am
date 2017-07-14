@@ -1,4 +1,4 @@
-# [samurai-champloo](http://music.163.com/#/playlist?id=84099051)
+# samurai-champloo
 
 ```
 Usage:  ploo -s execute the save operation
@@ -15,6 +15,8 @@ Usage:  ploo -s execute the save operation
 	
 	Example: ploo -sn'name' -e'exec' -u'username' -p'password
 ```
+
+[混沌武士](http://music.163.com/#/playlist?id=84099051)
 
 ## Install
 `brew tap gengxiankun/tap;brew install samurai-champloo`
