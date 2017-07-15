@@ -1,38 +1,20 @@
-# chaoswarrior
+# samurai-champloo
 
-> management of paragraph scripts. version 1.3 based on MacOS
+```
+Usage:  ploo -s execute the save operation
+	ploo -n name
+	ploo -e name the call to the command
+	ploo -a  turn on safe mode
+	ploo -u account, present is displayed
+	ploo -p password, present is displayed
+	ploo -d delete an existing command
+	ploo -l show the configuration file
+	ploo -f find for related configurations based on clues(-f'clues')
+	
+	directly called the command to execute the formation, specified in the -e
+	
+	Example: ploo -sn'name' -e'exec' -u'username' -p'password
+```
 
-
-## install
-	brew install chaoswarrior
-
-## params
-- -s execute the save operation
-- -n name
-- -e name the call to the command
-- -a  turn on safe mode
-- -u account, present is displayed
-- -p password, present is displayed
-- -d delete an existing command
-- -l show the configuration file
-- -f find for related configurations based on clues(-f'clues')
-- directly called the command to execute the formation, specified in the -e
-
-## example
-
-### Used as a shortcut command
-`sudo chaoswarrior -sn'localmysql' -e'mysql -uroot -p' -p'root'`
-
-`chaoswarrior localmysql`
-
-### Used as a password manager
-`sudo chaoswarrior -sn'githubcom' -e'open https://github.com/gengxiankun' -u'ge2x3k2@gmail' -p'xxxxxxxx'`
-
-`chaoswarrior githubcom`
-
-### Used as a line even if the code is pulled
-`sudo chaoswarrior -sn'codepull' -e"ssh root@2222.222.22.22 cd /codepath/code/;git pull"`
-
-`chaoswarrior codepull`
-
-### There are more welcome to add ….
+## Install
+`brew tap gengxiankun/tap;brew install samurai-champloo`
