@@ -132,7 +132,7 @@ _filling_file () {
 		_setAlias
 	fi
 
-	source ploo_complete.sh ${config_path}
+	ploo_complete.sh ${config_path}
 	echo "..."
 	echo "create success."
 
