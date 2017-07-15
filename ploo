@@ -34,25 +34,32 @@ source $config_path
 
 # help
 _getHelp () {
-	echo "Usage:  ploo -s execute the save operation"
-	echo "	ploo -n name"
-	echo "	ploo -e name the call to the command"
-	echo "	ploo -a  turn on safe mode"
-	echo "	ploo -u account, present is displayed"
-	echo "	ploo -p password, present is displayed"
-	echo "	ploo -d delete an existing command"
-	echo "	ploo -l show the configuration file"
-	echo "	ploo -f find for related configurations based on clues(-f'clues')"
+	echo "Usage:  "
+	echo "	-s 	: save a command to ploo"
+	echo "	-n <xxx>: the parameters that are essential when executing the '-s' command, the command alias"
+	echo "	-e <xxx>: the parameters that are essential when executing the '-s' command, save the command to ploo"
+	echo "	-a  	: optional parameters when executing the '-s' command, turn on safe mode"
+	echo "	-u <xxx>: optional parameters when executing the '-s' command, username"
+	echo "	-p <xxx>: optional parameters when executing the '-s' command, password"
+	echo " Example: ploo -sn'name' -e'exec' -u'username' -p'password'"
+	echo ""
+	echo "	-d <xxx>: delete an existing command"
+	echo "	-l 	: show the configuration file"
+	echo "	-f 	: find for related configurations based on clues(-f'clues')"
+	echo "	-c 	: add automatic completion for 'ploo' command; ex: 'source ploo -c'"
 	echo ""
 	echo "  	directly called the command to execute the formation, specified in the -e"
-	echo ""
-	echo "Example: ploo -sn'name' -e'exec' -u'username' -p'password'"
 }
 
 # getopts parameter analysis
-while getopts "slhvabd:u:n:p:e:f:" arg
+while getopts "cslhvabd:u:n:p:e:f:" arg
 do
         case $arg in
+	    # Complete
+	    c)
+	    	complete -W "$(cat ${config_path} | grep "#" | cut -d'[' -f 2 | cut -d']' -f 1)" ploo
+		return 0
+	    ;;
             # Execute the save operation
             s) ploo_save=1 ;;
 	    # name
@@ -132,7 +139,6 @@ _filling_file () {
 		_setAlias
 	fi
 
-	ploo_complete.sh ${config_path}
 	echo "..."
 	echo "create success."
 
