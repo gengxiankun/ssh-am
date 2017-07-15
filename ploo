@@ -2,13 +2,13 @@
 # samurai champloo BASED ON MacOS.
 # @author <ge2x3k2@gmail.com>
 # @time 2017-06-29
-# @version 2.0
+# @version 2.1
 
 # set -x
 # Read the command configuration file
 config_path='/etc/ploo/default.conf'
 # version number
-version_number=2.0
+version_number=2.1
 # set profile
 profile_path='/Users/xiankun.geng/.bash_profile'
 
@@ -132,6 +132,7 @@ _filling_file () {
 		_setAlias
 	fi
 
+	source ploo_complete.sh ${config_path}
 	echo "..."
 	echo "create success."
 
