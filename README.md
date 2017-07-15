@@ -20,3 +20,6 @@ Usage:
 
 ## Install
 `brew tap gengxiankun/tap;brew install samurai-champloo`
+
+## 自动补全
+`echo "source ploo -c" >> ~/.bash_profile`
