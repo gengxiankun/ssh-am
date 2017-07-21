@@ -1,4 +1,4 @@
-# samurai-champloo
+# ploo
 
 ```
 Usage:  
@@ -19,7 +19,7 @@ Usage:
 ```
 
 ## Install
-`brew tap gengxiankun/tap;brew install samurai-champloo`
+`brew tap gengxiankun/tap;brew install ploo`
 
 ## 自动补全
 `echo "source ploo -c" >> ~/.bash_profile`
