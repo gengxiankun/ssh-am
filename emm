@@ -8,7 +8,7 @@
 # Read the command configuration file
 config_path='/etc/emm/default.conf'
 # version number
-version_number='v3.0.1'
+version_number='v3.0.2'
 # set profile
 profile_path=''
 
