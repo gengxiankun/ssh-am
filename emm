@@ -58,7 +58,7 @@ do
 	    # Complete
 	    c)
 	    	complete -W "$(cat ${config_path} | grep "#" | cut -d'[' -f 2 | cut -d']' -f 1)" emm
-	    	exit 0
+	    	return 0
 	    ;;
         # Execute the save operation
         s) emm_save=1 ;;
