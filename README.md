@@ -19,7 +19,10 @@ Usage:
 ```
 
 ## Install
-`brew tap gengxiankun/tap;brew install emm`
+```
+brew tap gengxiankun/tap
+brew install emm
+```
 
 ## 自动补全
 `echo "source emm -c" >> ~/.bash_profile`
