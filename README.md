@@ -25,7 +25,7 @@ brew install fcb
 ## Usage
 ### Save the server account
 ```bash
-fcb add -n 'Server aliases, such as aws_11' -u 'Server username, for example root' -i 'Server IP, for example, 47.93.22.11' -p 'The port number, the default is 22' -c 'Password, For example 123123'
+fcb add -n 'aws_11' -u 'root' -i '47.93.22.11' -c '123123'
 ```
 ### ssh
 ```bash
