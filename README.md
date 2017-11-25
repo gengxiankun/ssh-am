@@ -27,6 +27,7 @@ brew install fcb
 ```bash
 fcb add -n 'aws_11' -u 'root' -i '47.93.22.11' -c '123123'
 ```
+In the example above, the fcb add command saves the server account. [-n alias] [-u server account] [-p server IP] [-c server password]
 ### ssh
 ```bash
 fcb aws_11
