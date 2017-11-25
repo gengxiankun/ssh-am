@@ -7,7 +7,7 @@
 |_| |_|  \___|\___/___\___|\___\___/|_| |_| |_|_.__/ \___/ 
    
 ```
-> fcb能够保存您的服务器账户(保存在本地~/.freezecombo)，他能方便一些命令对服务器账户的需要
+> fcb can save your server account (saved locally ~ / .freezecombo), he can facilitate some of the commands the server account needs
 
 ## Install
 ```
@@ -15,17 +15,17 @@ brew tap gengxiankun/tap
 brew install fcb
 ```
 
-## 自动补全
+## Automatic completion
 `echo "source fcb completion" >> ~/.bash_profile`
 
-## 现支持列表
+## Now support list
 - ssh
 - scp
 
 ## Usage
-### 保存服务器账户
+### Save the server account
 ```bash
-fcb add -n '服务器别名，例如aws_11' -u '服务器用户名，例如root' -i '服务器IP，例如47.93.22.11' -p '端口号，默认为22' -c '密码，例如123123'
+fcb add -n 'Server aliases, such as aws_11' -u 'Server username, for example root' -i 'Server IP, for example, 47.93.22.11' -p 'The port number, the default is 22' -c 'Password, For example 123123'
 ```
 ### ssh
 `fcb aws_11`
