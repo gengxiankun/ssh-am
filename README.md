@@ -24,11 +24,12 @@ brew install fcb
 
 ## Usage
 ### 保存服务器账户
-`fcb add -n '服务器别名，例如aws-11' -u '服务器用户名，例如root' -i '服务器IP，例如47.93.22.11' -p '端口号，默认为22' -c '密码，例如123123'`
-
+```bash
+fcb add -n '服务器别名，例如aws_11' -u '服务器用户名，例如root' -i '服务器IP，例如47.93.22.11' -p '端口号，默认为22' -c '密码，例如123123'
+```
 ### ssh
-`fcb aws-11`
+`fcb aws_11`
 
 ### scp
-`fcb scp aws-11:~/ ./test` or
-`fcb scp ./test aws-11:~/`
+`fcb scp aws_11:~/ ./test` or
+`fcb scp ./test aws_11:~/`
