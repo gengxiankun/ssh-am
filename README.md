@@ -7,7 +7,11 @@
 |_| |_|  \___|\___/___\___|\___\___/|_| |_| |_|_.__/ \___/ 
    
 ```
-> fcb can save your server account (saved locally ~ / .freezecombo), he can facilitate some of the commands the server account needs
+> fcb can save your server account (saved locally ~ / .freezecombo.rc), he can facilitate some of the commands the server account needs
+
+## Now support list
+- ssh
+- scp
 
 ## Install
 ```
@@ -17,7 +21,3 @@ brew install fcb
 
 ## Automatic completion
 `echo "source fcb completion" >> ~/.bash_profile`
-
-## Now support list
-- ssh
-- scp
