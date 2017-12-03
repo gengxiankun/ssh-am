@@ -12,10 +12,6 @@
 ```
 > fcb can save your server account (saved locally ~ / .freezecombo.rc), he can facilitate some of the commands the server account needs
 
-## Now support list
-- ssh
-- scp
-
 ## Install
 ```
 brew tap gengxiankun/tap
