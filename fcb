@@ -4,8 +4,8 @@
 # env
 defaultDrive='_freezecomboSsh'
 defaultConfigPath=~/.freezecombo.rc
-freezecomboVersion='4.0.0'
-freezecomboLastUpdateTime='2017-11-25 19:55'
+freezecomboVersion='5.1.0'
+freezecomboLastUpdateTime='2017-12-03 15:00'
 
 function _freezecomboShowVersion() {
 	echo "
@@ -20,12 +20,13 @@ fcb version ${freezecomboVersion} ${freezecomboLastUpdateTime}
 }
 
 function _freezecomboHelp() {
-	echo "Usage: fcb add [-n name] [-u user] [-p port | -c cipher/password]"
-	echo "       fcb delete \`name\`"
-	echo "       fcb \`name\`"
-	echo "       fcb scp \`name\`"
+	echo "USAGE: fcb add [-n ALIAS] [-u USER] [-p PROT| -c cipher/password]"
+	echo "       fcb delete ALIAS"
+	echo "       fcb ALIAS"
+	echo "       fcb scp ALIAS"
+	echo "       fcb [scp | ] [-f alias fortress] ALIAS"
 	echo "       fcb version"
-	echo "       fcb find \`name\`"
+	echo "       fcb find ALIAS"
 }
 
 # initialization
@@ -36,6 +37,16 @@ if [[ ! -e ${defaultConfigPath} ]]; then
 	echo "starting initialization..."
 	echo "#freezecombo.rc for fcb." > ${defaultConfigPath}
 fi
+
+function _freezecomboList() {
+	varList=$(cat ~/.freezecombo.rc | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)
+	echo -e "ALIAS \t\t USER \t IP \t\t\t PORT"
+	for var in $varList
+	do
+		_getConfigVar $var false
+    	echo -e "${var} \t ${!FREEZECOMBO_USER} \t ${!FREEZECOMBO_IP}      \t ${!FREEZECOMBO_PORT}"
+	done
+}
 
 function _freezecomboAdd() {
 	# getopts parameter analysis
@@ -79,27 +90,82 @@ function _getConfigVar() {
 	FREEZECOMBO_CIPHER=$1_cipher
 	
 	if [[ ! -z ${!FREEZECOMBO_CIPHER} && ${2} != false ]]; then
-		echo "${!FREEZECOMBO_CIPHER}" | pbcopy;echo -e "The cipher has been copied to the clipboard, directly \033[49;30;5m COMMAND + V \033[0m paster."
+		echo "${!FREEZECOMBO_CIPHER}" | pbcopy;echo -e "The cipher has been copied to the clipboard, directly \033[49 CCOMMAND + V \033[0m paster."
 	fi
 }
 
 function _freezecomboSsh() {
+	# getopts parameter analysis
+    while getopts "f:" arg
+    do
+        case $arg in
+            f) freezecomboFortress="${OPTARG}" ;;
+            ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+    done
+
+	if [[ ! -z $freezecomboFortress ]];then
+		_getConfigVar $freezecomboFortress false
+		FREEZECOMBO_FORTRESS_PORT=${FREEZECOMBO_PORT}
+		FREEZECOMBO_FORTRESS_USER=${FREEZECOMBO_USER}
+		FREEZECOMBO_FORTRESS_IP=${FREEZECOMBO_IP}
+		FREEZECOMBO_FORTRESS_CIPHER=${FREEZECOMBO_CIPHER}
+		
+		_getConfigVar $3
+		ssh -t -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "ssh -p ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}"
+	fi
+
 	_getConfigVar $1
 	ssh -p ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}
 }
 
 function _freezecomboScp() {
+	# getopts parameter analysis
+    while getopts "f:" arg
+    do
+        case $arg in
+            f) freezecomboFortress="${OPTARG}" ;;
+            ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+    done
+
+	if [[ ! -z $freezecomboFortress ]];then
+		_getConfigVar $freezecomboFortress false
+        FREEZECOMBO_FORTRESS_PORT=${FREEZECOMBO_PORT}
+        FREEZECOMBO_FORTRESS_USER=${FREEZECOMBO_USER}
+        FREEZECOMBO_FORTRESS_IP=${FREEZECOMBO_IP}
+        FREEZECOMBO_FORTRESS_CIPHER=${FREEZECOMBO_CIPHER}
+
+        fcbAddressIn3=${3#*:}
+		fcbNameIn3=${3%:*}
+		fcbAddressIn4=${4#*:}
+		fcbNameIn4=${4%:*}
+		if [[ ${fcbAddressIn3} != ${fcbNameIn3} ]]; then
+			_getConfigVar ${fcbNameIn3}
+			ssh -r -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "scp -P ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${fcbAddressIn3} /tmp/"
+			scp -r -P ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP}:/tmp/${fcbAddressIn3#*/} $4
+		elif [[ ${fcbAddressIn4} != ${fcbNameIn4} ]]; then
+			_getConfigVar ${fcbNameIn4}
+			scp -P ${!FREEZECOMBO_FORTRESS_PORT} $3 ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP}:/tmp/
+			ssh -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "scp -P ${!FREEZECOMBO_PORT} /tmp/${3#*/} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${fcbAddressIn4}"
+        else
+        	exit 1
+        fi
+        
+        return 0
+	fi
+
+	fcbAddressIn1=${1#*:}
+	fcbNameIn1=${1%:*}
 	fcbAddressIn2=${2#*:}
 	fcbNameIn2=${2%:*}
-	fcbAddressIn3=${3#*:}
-	fcbNameIn3=${3%:*}
 
-	if [[ ${fcbAddressIn2} != ${fcbNameIn2} ]]; then
+	if [[ ${fcbAddressIn1} != ${fcbNameIn1} ]]; then
+		_getConfigVar ${fcbNameIn1}
+		scp -r -P ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${fcbAddressIn2} $2
+	elif [[ ${fcbAddressIn2} != ${fcbNameIn2} ]]; then
 		_getConfigVar ${fcbNameIn2}
-		scp -r -P ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${fcbAddressIn2} $3
-	elif [[ ${fcbAddressIn3} != ${fcbNameIn3} ]]; then
-		_getConfigVar ${fcbNameIn3}
-		scp -r -P ${!FREEZECOMBO_PORT} $2 ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${fcbAddressIn3}
+		scp -r -P ${!FREEZECOMBO_PORT} $1 ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${fcbAddressIn3}
 	else
 		exit 1
 	fi
@@ -125,7 +191,10 @@ case $1 in
 		_freezecomboHelp
 	;;
 	scp)
-		_freezecomboScp $*
+		_freezecomboScp $(echo $* | awk '$1="";1')
+	;;
+	list)
+		_freezecomboList
 	;;
 	*)
 		${defaultDrive} $*
