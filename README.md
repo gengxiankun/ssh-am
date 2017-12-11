@@ -1,5 +1,5 @@
 # fcb
-[![version](https://img.shields.io/badge/version-5.1.0-blue.svg)]()
+[![version](https://img.shields.io/badge/version-5.1.1-blue.svg)]()
 [![homebrew install](https://img.shields.io/badge/homebrew-install-brightgreen.svg)]()
 [![support list](https://img.shields.io/badge/support%20list-ssh%20scp-orange.svg)]()
 ```
