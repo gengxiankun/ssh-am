@@ -5,8 +5,8 @@ set -x
 # env
 defaultDrive='_freezecomboSsh'
 defaultConfigPath=~/.freezecombo.rc
-freezecomboVersion='5.1.1'
-freezecomboLastUpdateTime='2017-12-11 17:50'
+freezecomboVersion='5.1.2'
+freezecomboLastUpdateTime='2017-12-12 10:42'
 
 function _freezecomboShowVersion() {
 	echo "
