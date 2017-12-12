@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # fcb BASED ON MacOS.
+set -x
 
 # env
 defaultDrive='_freezecomboSsh'
@@ -143,7 +144,11 @@ function _freezecomboScp() {
 		fcbNameIn4=${4%:*}
 		if [[ ${fcbAddressIn3} != ${fcbNameIn3} ]]; then
 			_getConfigVar ${fcbNameIn3}
-			ssh -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "scp -P ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${fcbAddressIn3} /tmp/"
+			let i=${#fcbAddressIn3}-1
+			if [[ ${fcbAddressIn3:$i:1} == '/' ]];then
+				fcbAddressIn3=${fcbAddressIn3%/}
+			fi
+			ssh -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "scp -r -P ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${fcbAddressIn3} /tmp/"
 			scp -r -P ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP}:/tmp/${fcbAddressIn3##*/} $4
 		elif [[ ${fcbAddressIn4} != ${fcbNameIn4} ]]; then
 			_getConfigVar ${fcbNameIn4}
