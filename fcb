@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # fcb BASED ON MacOS.
-set -x
 
 # env
 defaultDrive='_freezecomboSsh'
 defaultConfigPath=~/.freezecombo.rc
-freezecomboVersion='5.1.2'
+freezecomboVersion='5.1.3'
 freezecomboLastUpdateTime='2017-12-12 10:42'
 
 function _freezecomboShowVersion() {
