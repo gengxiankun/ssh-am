@@ -11,7 +11,7 @@
  \/____/ \/_/\/_/\/__/\/_/ \/_/\/_/ 
                                     
 ```
-> chair can save your server account (saved locally ~ / .chair.rc), he can facilitate some of the commands the server account needs
+> chair can save your server account (saved locally ~ / .chair.rc), it can facilitate some of the commands the server account needs
 
 ## Install
 ```
