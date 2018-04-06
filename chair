@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# chair BASED ON MacOS.
+# chair can save your server account (saved locally ~ / .chair.rc), he can facilitate some of the commands the server account needs
 
-# env
 defaultDrive='_chairSsh'
 defaultConfigPath=~/.chair.rc
-chairVersion='5.1.3'
-chairLastUpdateTime='2017-12-12 10:42'
+chairVersion='5.2.0'
+chairLastUpdateTime='2018-04-07'
 
 function _chairShowVersion() {
 	echo "
