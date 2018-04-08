@@ -1,6 +1,4 @@
 # chair
-
-[![asciicast](https://asciinema.org/a/fhEOKB7ds2UrL2vUJZbROBk4U.png)](https://asciinema.org/a/fhEOKB7ds2UrL2vUJZbROBk4U)
 [![version](https://img.shields.io/badge/version-5.2.0-blue.svg)]()
 [![homebrew install](https://img.shields.io/badge/homebrew-install-brightgreen.svg)]()
 ```
@@ -14,6 +12,7 @@
                                     
 ```
 > chair can save your server account (saved locally ~ / .chair.rc), it can facilitate some of the commands the server account needs
+[![asciicast](https://asciinema.org/a/fhEOKB7ds2UrL2vUJZbROBk4U.png)](https://asciinema.org/a/fhEOKB7ds2UrL2vUJZbROBk4U)
 
 ## Install
 ```
