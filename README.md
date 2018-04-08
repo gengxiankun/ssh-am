@@ -1,4 +1,6 @@
 # chair
+
+[![asciicast](https://asciinema.org/a/fhEOKB7ds2UrL2vUJZbROBk4U.png)](https://asciinema.org/a/fhEOKB7ds2UrL2vUJZbROBk4U)
 [![version](https://img.shields.io/badge/version-5.2.0-blue.svg)]()
 [![homebrew install](https://img.shields.io/badge/homebrew-install-brightgreen.svg)]()
 ```
