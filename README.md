@@ -1,5 +1,5 @@
 # chair
-[![version](https://img.shields.io/badge/version-5.2.0-blue.svg)]()
+[![version](https://img.shields.io/badge/version-5.3.0-blue.svg)]()
 [![homebrew install](https://img.shields.io/badge/homebrew-install-brightgreen.svg)]()
 ```
       __                            
