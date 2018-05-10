@@ -3,8 +3,8 @@
 
 defaultDrive='_chairSsh'
 defaultConfigPath=~/.chair.rc
-chairVersion='5.2.0'
-chairLastUpdateTime='2018-04-07'
+chairVersion='5.3.0'
+chairLastUpdateTime='2018-05-10'
 
 function _chairShowVersion() {
 	echo "
@@ -41,11 +41,11 @@ fi
 
 function _chairList() {
 	varList=$(cat ~/.chair.rc | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)
-	echo -e "ALIAS \t\t USER \t IP \t\t\t PORT"
+	echo -e "ALIAS USER IP PORT"
 	for var in $varList
 	do
 		_getConfigVar $var false
-    	echo -e "${var} \t ${!FREEZECOMBO_USER} \t ${!FREEZECOMBO_IP}      \t ${!FREEZECOMBO_PORT}"
+    	echo -e "${var} ${!FREEZECOMBO_USER} ${!FREEZECOMBO_IP} ${!FREEZECOMBO_PORT}"
 	done
 }
 
@@ -200,7 +200,7 @@ case $1 in
 		_chairScp $(echo $* | awk '$1="";1')
 	;;
 	list)
-		_chairList
+		_chairList | column -t
 	;;
 	*)
 		${defaultDrive} $*
