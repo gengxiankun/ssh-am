@@ -1,6 +1,4 @@
 # chair
-[![version](https://img.shields.io/badge/version-5.3.0-blue.svg)]()
-[![homebrew install](https://img.shields.io/badge/homebrew-install-brightgreen.svg)]()
 ```
       __                            
      /\ \                __         
@@ -9,17 +7,15 @@
 /\ \__/\ \ \ \ \/\ \L\.\_\ \ \ \ \/ 
 \ \____\\ \_\ \_\ \__/.\_\\ \_\ \_\ 
  \/____/ \/_/\/_/\/__/\/_/ \/_/\/_/ 
-                                    
+ 
+chair version 5.3.0 2018-05-10
 ```
-> chair can save your server account (saved locally ~ / .chair.rc), it can facilitate some of the commands the server account needs
 
-[![asciicast](https://asciinema.org/a/fhEOKB7ds2UrL2vUJZbROBk4U.png)](https://asciinema.org/a/fhEOKB7ds2UrL2vUJZbROBk4U)
-
-## Install
+## installation
 ```
 brew tap gengxiankun/tap
 brew install chair
 ```
 
-## Automatic completion
+## automatic completion
 `echo "source chair completion" >> ~/.bash_profile`
