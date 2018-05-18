@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # chair can save your server account (saved locally ~ / .chair.rc), he can facilitate some of the commands the server account needs
-
+# set -x
 defaultDrive='_chairSsh'
 defaultConfigPath=~/.chair.rc
-chairVersion='5.3.0'
-chairLastUpdateTime='2018-05-10'
+chairVersion='6.0'
+chairLastUpdateTime='2018-05-19'
 
 function _chairShowVersion() {
 	echo "
@@ -16,27 +16,27 @@ function _chairShowVersion() {
 \\ \\____\\\\ \\_\\ \\_\\ \\__/.\\_\\\\ \\_\\ \\_\\ 
  \\/____/ \\/_/\\/_/\\/__/\\/_/ \\/_/\\/_/ 
                                     
-chair version ${chairVersion} ${chairLastUpdateTime}
+chair version ${chairVersion} ${chairLastUpdateTime} @auther xiankun.geng <ge2x3k2@gamail.com> <https://github.com/gengxiankun>
 " 
 }
 
 function _chairHelp() {
-	echo "USAGE: chair add [-n ALIAS] [-u USER] [-p PROT| -c cipher/password]"
-	echo "       chair delete ALIAS"
-	echo "       chair ALIAS"
-	echo "       chair scp ALIAS"
-	echo "       chair [scp | ] [-f alias fortress] ALIAS"
-	echo "       chair version"
-	echo "       chair find ALIAS"
+	echo "USAGE: chair [ | scp] [ | -f alias](fortress) alias"
+	echo "             add [-n alias] [-u user] [-i ip] [-p prot] [-c cipher/password]"
+	echo "             modify alias [-n alias | -u user | -i ip | -p prot | -c cipher/password]"
+	echo "             delete alias"
+	echo "             find alias"
 }
 
 # initialization
 if [[ ! -e ${defaultConfigPath} ]]; then
 	say hello chair
 	_chairShowVersion
-	touch ${defaultConfigPath}
 	echo "starting initialization..."
+	touch ${defaultConfigPath}
+	echo "source chair completion" >> ~/.bash_profile
 	echo "#chair.rc for chair." > ${defaultConfigPath}
+
 fi
 
 function _chairList() {
@@ -67,6 +67,53 @@ function _chairAdd() {
 	echo "${chairName}_ip='${chairIp}'" >> ${defaultConfigPath}
 	echo "${chairName}_port='${chairPort:-22}'" >> ${defaultConfigPath}
 	echo "${chairName}_cipher='${chairCipher}'" >> ${defaultConfigPath}
+}
+
+function _chairModfiy() {
+	# getopts parameter analysis
+	while getopts "n:u:i:p:c:" arg
+	do
+        case $arg in
+	        n) chairName="${OPTARG}" ;;
+	        u) chairUser="${OPTARG}" ;;
+	        i) chairIp="${OPTARG}" ;;
+			p) chairPort="${OPTARG}" ;;
+			c) chairCipher="${OPTARG}" ;;
+	        ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+	done
+
+	_getConfigVar ${MODIFY_ALIAS} false
+	if [[ -z ${!FREEZECOMBO_USER} ]]; then
+		echo "Not specified alias."
+		exit 2
+	fi
+
+	if [[ ! -z ${chairName} ]]; then
+		sed -i "" "s/\[$MODIFY_ALIAS\]/[$chairName]/g" ${defaultConfigPath}
+		sed -i "" "s/${FREEZECOMBO_USER}/${chairName}_user/g" ${defaultConfigPath}
+		sed -i "" "s/${FREEZECOMBO_IP}/${chairName}_ip/g" ${defaultConfigPath}
+		sed -i "" "s/${FREEZECOMBO_PORT}/${chairName}_port/g" ${defaultConfigPath}
+		sed -i "" "s/${FREEZECOMBO_CIPHER}/${chairName}_cipher/g" ${defaultConfigPath}
+	else
+		chairName=${MODIFY_ALIAS}
+	fi
+
+	if [[ ! -z ${chairUser} ]]; then
+		sed -i "" "s/^${chairName}_user.*$/${chairName}_user='${chairUser}'/g" ~/.chair.rc
+	fi
+
+	if [[ ! -z ${chairIp} ]]; then
+		sed -i "" "s/^${chairName}_ip.*$/${chairName}_ip='${chairIp}'/g" ~/.chair.rc
+	fi
+
+	if [[ ! -z ${chairPort} ]]; then
+		sed -i "" "s/^${chairName}_port.*$/${chairName}_port='${chairPort}'/g" ~/.chair.rc
+	fi
+
+	if [[ ! -z ${chairCipher} ]]; then
+		sed -i "" "s/^${chairName}_cipher.*$/${chairName}_cipher='${chairCipher}'/g" ~/.chair.rc
+	fi
 }
 
 function _chairFind() {
@@ -180,6 +227,10 @@ function _chairScp() {
 case $1 in
 	add)
 		_chairAdd $(echo $* | awk '$1="";1')
+	;;
+	modify)
+		MODIFY_ALIAS=${2}
+		_chairModfiy $(echo $* | awk '$1=$2=$3"";1')
 	;;
 	delete)
 		_chairDelete $(echo $* | awk '$1="";1')

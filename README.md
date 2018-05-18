@@ -7,15 +7,12 @@
 /\ \__/\ \ \ \ \/\ \L\.\_\ \ \ \ \/ 
 \ \____\\ \_\ \_\ \__/.\_\\ \_\ \_\ 
  \/____/ \/_/\/_/\/__/\/_/ \/_/\/_/ 
- 
-chair version 5.3.0 2018-05-10
+                                    
+chair version 6.0 2018-05-19 @auther xiankun.geng <ge2x3k2@gamail.com> <https://github.com/gengxiankun>
 ```
 
 ## installation
 ```
-brew tap gengxiankun/tap
+brew tap gengxiankun/tap &&\
 brew install chair
 ```
-
-## automatic completion
-`echo "source chair completion" >> ~/.bash_profile`
