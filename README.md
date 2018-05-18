@@ -13,7 +13,7 @@ chair version 6.0 2018-05-19 @auther xiankun.geng <ge2x3k2@gamail.com> <https://
 
 ## Installation
 ```
-brew brew install gengxiankun/tap/chair
+brew install gengxiankun/tap/chair
 ```
 
 ## Usage
