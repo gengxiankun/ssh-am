@@ -8,7 +8,7 @@
 \ \____\\ \_\ \_\ \__/.\_\\ \_\ \_\ 
  \/____/ \/_/\/_/\/__/\/_/ \/_/\/_/ 
                                     
-chair version 6.0 2018-05-19 @link https://github.com/gengxiankun/chair @auther xiankun.geng <ge2x3k2@gamail.com>
+chair version 6.0 2018-05-19 @link https://github.com/gengxiankun/chair
 ```
 
 ## Installation

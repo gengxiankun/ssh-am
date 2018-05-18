@@ -16,7 +16,7 @@ function _chairShowVersion() {
 \\ \\____\\\\ \\_\\ \\_\\ \\__/.\\_\\\\ \\_\\ \\_\\ 
  \\/____/ \\/_/\\/_/\\/__/\\/_/ \\/_/\\/_/ 
                                     
-chair version ${chairVersion} ${chairLastUpdateTime} @link https://github.com/gengxiankun/chair @auther xiankun.geng <ge2x3k2@gamail.com>
+chair version ${chairVersion} ${chairLastUpdateTime} @link https://github.com/gengxiankun/chair
 " 
 }
 
