@@ -1,5 +1,5 @@
 # chair
-```
+```sh
       __                            
      /\ \                __         
   ___\ \ \___      __   /\_\  _ __  
@@ -11,8 +11,8 @@
 chair version 6.0 2018-05-19 @auther xiankun.geng <ge2x3k2@gamail.com> <https://github.com/gengxiankun>
 ```
 
-## installation
-```
+## Installation
+```sh
 brew tap gengxiankun/tap &&\
 brew install chair
 ```
