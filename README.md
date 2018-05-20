@@ -1,5 +1,5 @@
 # chair
-```ruby
+```
       __                            
      /\ \                __         
   ___\ \ \___      __   /\_\  _ __  
@@ -17,7 +17,7 @@ brew install gengxiankun/tap/chair
 ```
 
 ## Usage
-```bash
+```
 chair [ | scp] [ | -f alias](fortress) alias
       add [-n alias] [-u user] [-i ip] [-p prot] [-c cipher/password]
       modify alias [-n alias | -u user | -i ip | -p prot | -c cipher/password]
