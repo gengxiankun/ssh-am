@@ -1,5 +1,5 @@
 # chair
-```
+```ruby
       __                            
      /\ \                __         
   ___\ \ \___      __   /\_\  _ __  
@@ -8,7 +8,7 @@
 \ \____\\ \_\ \_\ \__/.\_\\ \_\ \_\ 
  \/____/ \/_/\/_/\/__/\/_/ \/_/\/_/ 
                                     
-chair version 6.0 2018-05-19 @link https://github.com/gengxiankun/chair
+chair version 6.1 2018-06-10 @link https://github.com/gengxiankun/chair
 ```
 
 ## Installation
@@ -16,11 +16,17 @@ chair version 6.0 2018-05-19 @link https://github.com/gengxiankun/chair
 brew install gengxiankun/tap/chair
 ```
 
-## Usage
+## Automatically populate host aliases
 ```
+echo "source chair completion" >> ~/.bash_profile
+```
+
+## Usage
+```bash
 chair [ | scp] [ | -f alias](fortress) alias
-      add [-n alias] [-u user] [-i ip] [-p prot] [-c cipher/password]
-      modify alias [-n alias | -u user | -i ip | -p prot | -c cipher/password]
+      add [-n alias] [-u user] [-i ip] [-p password] [-P prot]
+      modify alias [-n alias | -u user | -i ip | -p password | -P prot]
+      ansible [ | -l alias] [ | alias]
       delete alias
       find alias
 ```

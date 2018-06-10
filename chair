@@ -3,8 +3,8 @@
 # set -x
 defaultDrive='_chairSsh'
 defaultConfigPath=~/.chair.rc
-chairVersion='6.0'
-chairLastUpdateTime='2018-05-19'
+chairVersion='6.1'
+chairLastUpdateTime='2018-06-10'
 
 function _chairShowVersion() {
 	echo "
@@ -22,8 +22,9 @@ chair version ${chairVersion} ${chairLastUpdateTime} @link https://github.com/ge
 
 function _chairHelp() {
 	echo "USAGE: chair [ | scp] [ | -f alias](fortress) alias"
-	echo "             add [-n alias] [-u user] [-i ip] [-p prot] [-c cipher/password]"
-	echo "             modify alias [-n alias | -u user | -i ip | -p prot | -c cipher/password]"
+	echo "             add [-n alias] [-u user] [-i ip] [-p password] [-P prot]"
+	echo "             modify alias [-n alias | -u user | -i ip | -p password | -P prot]"
+	echo "             ansible [ | -l alias] [ | alias]"
 	echo "             delete alias"
 	echo "             find alias"
 }
@@ -34,7 +35,6 @@ if [[ ! -e ${defaultConfigPath} ]]; then
 	_chairShowVersion
 	echo "starting initialization..."
 	touch ${defaultConfigPath}
-	echo "source chair completion" >> ~/.bash_profile
 	echo "#chair.rc for chair." > ${defaultConfigPath}
 
 fi
@@ -51,14 +51,14 @@ function _chairList() {
 
 function _chairAdd() {
 	# getopts parameter analysis
-	while getopts "n:u:i:p:c:" arg
+	while getopts "n:u:i:p:P:" arg
 	do
         case $arg in
 	        n) chairName="${OPTARG}" ;;
 	        u) chairUser="${OPTARG}" ;;
 	        i) chairIp="${OPTARG}" ;;
-			p) chairPort="${OPTARG}" ;;
-			c) chairCipher="${OPTARG}" ;;
+			P) chairPort="${OPTARG}" ;;
+			p) chairCipher="${OPTARG}" ;;
 	        ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
         esac
 	done
@@ -71,14 +71,14 @@ function _chairAdd() {
 
 function _chairModfiy() {
 	# getopts parameter analysis
-	while getopts "n:u:i:p:c:" arg
+	while getopts "n:u:i:p:P:" arg
 	do
         case $arg in
 	        n) chairName="${OPTARG}" ;;
 	        u) chairUser="${OPTARG}" ;;
 	        i) chairIp="${OPTARG}" ;;
-			p) chairPort="${OPTARG}" ;;
-			c) chairCipher="${OPTARG}" ;;
+			P) chairPort="${OPTARG}" ;;
+			p) chairCipher="${OPTARG}" ;;
 	        ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
         esac
 	done
@@ -224,6 +224,27 @@ function _chairScp() {
 	fi
 }
 
+function _chairAnsible() {
+	while getopts "l:" arg
+    do
+        case $arg in
+            l) chairLike="${OPTARG}" ;;
+            ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+    done
+    if [[ ! -z ${chairLike} ]]; then
+    	ansibleHosts=$(cat ~/.chair.rc | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1 | grep ${chairLike})
+    else
+		ansibleHosts=$(echo $*)
+    fi
+	for host in ${ansibleHosts}
+	do
+		_getConfigVar ${host} false
+		echo ${host} ansible_ssh_user=${!FREEZECOMBO_USER} ansible_ssh_host=${!FREEZECOMBO_IP} ansible_ssh_port=${!FREEZECOMBO_PORT}
+	done
+	exit
+}
+
 case $1 in
 	add)
 		_chairAdd $(echo $* | awk '$1="";1')
@@ -252,6 +273,9 @@ case $1 in
 	;;
 	list)
 		_chairList | column -t
+	;;
+	ansible)
+		_chairAnsible $(echo $* | awk '$1="";1')
 	;;
 	*)
 		${defaultDrive} $*
