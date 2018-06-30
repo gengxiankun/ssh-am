@@ -1,4 +1,4 @@
-# 
+# chair
 ```ruby
       __                            
      /\ \                __         
@@ -8,7 +8,6 @@
 \ \____\\ \_\ \_\ \__/.\_\\ \_\ \_\ 
  \/____/ \/_/\/_/\/__/\/_/ \/_/\/_/ 
                                     
-chair version 6.1 2018-06-10 @link https://github.com/gengxiankun/chair
 ```
 
 ## Installation
