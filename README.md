@@ -15,11 +15,8 @@ chair version 6.1 2018-06-10 @link https://github.com/gengxiankun/chair
 ```bash
 brew install gengxiankun/tap/chair
 ```
-
-## Automatically populate host aliases
-```bash
-echo "source chair completion" >> ~/.bash_profile
-```
+> Automatically populate host aliases
+> `echo "source chair completion" >> ~/.bash_profile`
 
 ## Usage
 ```bash
