@@ -27,5 +27,5 @@ chair [ | scp] [ | -f alias](fortress) alias
       find alias
 ```
 
-## Solo on asciinema
+## Demonstration on asciinema
 [![asciicast](https://asciinema.org/a/J75WcN7jfWS8EyCjTg3x1zN6c.png)](https://asciinema.org/a/J75WcN7jfWS8EyCjTg3x1zN6c)
