@@ -1,6 +1,6 @@
 # DGJJ
 
-## Installation
+## 安装
 ```bash
 brew install gengxiankun/tap/dgjj
 ```
