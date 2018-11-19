@@ -1,0 +1,296 @@
+#!/usr/bin/env bash
+# set -x
+defaultDrive='_dgjjSsh'
+defaultConfigPath=~/Documents/.dgjj.data
+
+function _dgjjHelp() {
+	echo "USAGE: dgjj [ | scp] [ | -f alias](fortress) alias"
+	echo "             add [-n alias] [-u user] [-i ip] [-p password] [-P prot]"
+	echo "             modify alias [-n alias | -u user | -i ip | -p password | -P prot]"
+	echo "             ansible [ | -l alias] [ | alias]"
+	echo "             delete alias"
+	echo "             find alias"
+}
+
+function _dgjjHelp() {
+  cat <<-EOF
+
+  Usage: dgjj [options] [server_name]
+
+  Options:
+
+    -n 			账户别名
+    -i 			IP
+    -u 			用户名
+    -p 			登陆密码
+    -P 			端口号
+
+  Commands:
+
+    add 		新增一个账户
+    modify 		修改一个账户
+    delete 		删除一个账户
+    list 		查看账户列表
+    find 		查看账户详情
+    ansible 		将账户数据以ansible的格式输出
+    --scp 		默认操作为ssh，指定--scp则进行scp操作
+    -h|--help 		查看帮助
+
+EOF
+}
+
+# initialization
+if [[ ! -e ${defaultConfigPath} ]]; then
+	echo "starting initialization..."
+	touch ${defaultConfigPath}
+	echo "#.dgjj.data" > ${defaultConfigPath}
+fi
+
+function _dgjjList() {
+	varList=$(cat ${defaultConfigPath} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)
+	echo -e "ALIAS USER IP PORT"
+	for var in $varList
+	do
+		_getConfigVar $var false
+    	echo -e "${var} ${!FREEZECOMBO_USER} ${!FREEZECOMBO_IP} ${!FREEZECOMBO_PORT}"
+	done
+}
+
+function _dgjjAdd() {
+	# getopts parameter analysis
+	while getopts "n:u:i:p:P:" arg
+	do
+        case $arg in
+	        n) dgjjName="${OPTARG}" ;;
+	        u) dgjjUser="${OPTARG}" ;;
+	        i) dgjjIp="${OPTARG}" ;;
+			P) dgjjPort="${OPTARG}" ;;
+			p) dgjjCipher="${OPTARG}" ;;
+	        ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+	done
+	echo "# [${dgjjName}]" >> ${defaultConfigPath}
+	echo "${dgjjName}_user='${dgjjUser}'" >> ${defaultConfigPath}
+	echo "${dgjjName}_ip='${dgjjIp}'" >> ${defaultConfigPath}
+	echo "${dgjjName}_port='${dgjjPort:-22}'" >> ${defaultConfigPath}
+	echo "${dgjjName}_cipher='${dgjjCipher}'" >> ${defaultConfigPath}
+}
+
+function _dgjjModfiy() {
+	# getopts parameter analysis
+	while getopts "n:u:i:p:P:" arg
+	do
+        case $arg in
+	        n) dgjjName="${OPTARG}" ;;
+	        u) dgjjUser="${OPTARG}" ;;
+	        i) dgjjIp="${OPTARG}" ;;
+			P) dgjjPort="${OPTARG}" ;;
+			p) dgjjCipher="${OPTARG}" ;;
+	        ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+	done
+
+	_getConfigVar ${MODIFY_ALIAS} false
+	if [[ -z ${!FREEZECOMBO_USER} ]]; then
+		echo "Not specified alias."
+		exit 2
+	fi
+
+	if [[ ! -z ${dgjjName} ]]; then
+		sed -i "" "s/\[$MODIFY_ALIAS\]/[$dgjjName]/g" ${defaultConfigPath}
+		sed -i "" "s/${FREEZECOMBO_USER}/${dgjjName}_user/g" ${defaultConfigPath}
+		sed -i "" "s/${FREEZECOMBO_IP}/${dgjjName}_ip/g" ${defaultConfigPath}
+		sed -i "" "s/${FREEZECOMBO_PORT}/${dgjjName}_port/g" ${defaultConfigPath}
+		sed -i "" "s/${FREEZECOMBO_CIPHER}/${dgjjName}_cipher/g" ${defaultConfigPath}
+	else
+		dgjjName=${MODIFY_ALIAS}
+	fi
+
+	if [[ ! -z ${dgjjUser} ]]; then
+		sed -i "" "s/^${dgjjName}_user.*$/${dgjjName}_user='${dgjjUser}'/g" ${defaultConfigPath}
+	fi
+
+	if [[ ! -z ${dgjjIp} ]]; then
+		sed -i "" "s/^${dgjjName}_ip.*$/${dgjjName}_ip='${dgjjIp}'/g" ${defaultConfigPath}
+	fi
+
+	if [[ ! -z ${dgjjPort} ]]; then
+		sed -i "" "s/^${dgjjName}_port.*$/${dgjjName}_port='${dgjjPort}'/g" ${defaultConfigPath}
+	fi
+
+	if [[ ! -z ${dgjjCipher} ]]; then
+		sed -i "" "s/^${dgjjName}_cipher.*$/${dgjjName}_cipher='${dgjjCipher}'/g" ${defaultConfigPath}
+	fi
+}
+
+function _dgjjFind() {
+	_getConfigVar $1 false
+	echo -e "\033[4m ${1} \033[0m \033[32;49;1m [User] \033[39;49;0m ${!FREEZECOMBO_USER} \033[32;49;1m [IP] \033[39;49;0m ${!FREEZECOMBO_IP} \033[32;49;1m [Port] \033[39;49;0m ${!FREEZECOMBO_PORT} \033[32;49;1m [Password/Cipher] \033[39;49;0m ${!FREEZECOMBO_CIPHER}"
+}
+
+function _dgjjDelete() {
+	if [[ -z ${1} ]]; then return 1; fi
+	sed -i "" "/\[${1}\]/d" ${defaultConfigPath}
+	sed -i "" "/${1}_user/d" ${defaultConfigPath}
+	sed -i "" "/${1}_ip/d" ${defaultConfigPath}
+	sed -i "" "/${1}_port/d" ${defaultConfigPath}
+	sed -i "" "/${1}_cipher/d" ${defaultConfigPath}
+}
+
+function _getConfigVar() {
+	source ${defaultConfigPath}
+	FREEZECOMBO_USER=$1_user
+	FREEZECOMBO_IP=$1_ip
+	FREEZECOMBO_PORT=$1_port
+	FREEZECOMBO_CIPHER=$1_cipher
+	
+	if [[ ! -z ${!FREEZECOMBO_CIPHER} && ${2} != false ]]; then
+		echo "${!FREEZECOMBO_CIPHER}" | pbcopy;echo -e "The cipher has been copied to the clipboard, directly \033[49 CCOMMAND + V \033[0m paster."
+	else
+		echo "Invalid parameter: -$1"; exit 0
+	fi
+}
+
+function _dgjjSsh() {
+	# getopts parameter analysis
+    while getopts "f:" arg
+    do
+        case $arg in
+            f) dgjjFortress="${OPTARG}" ;;
+            ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+    done
+
+	if [[ ! -z $dgjjFortress ]];then
+		_getConfigVar $dgjjFortress false
+		FREEZECOMBO_FORTRESS_PORT=${FREEZECOMBO_PORT}
+		FREEZECOMBO_FORTRESS_USER=${FREEZECOMBO_USER}
+		FREEZECOMBO_FORTRESS_IP=${FREEZECOMBO_IP}
+		FREEZECOMBO_FORTRESS_CIPHER=${FREEZECOMBO_CIPHER}
+		
+		_getConfigVar $3
+		ssh -t -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "ssh -p ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}"
+		exit 0
+	fi
+
+	_getConfigVar $1
+	ssh -p ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}
+}
+
+function _dgjjScp() {
+	# getopts parameter analysis
+    while getopts "f:" arg
+    do
+        case $arg in
+            f) dgjjFortress="${OPTARG}" ;;
+            ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+    done
+
+	if [[ ! -z $dgjjFortress ]];then
+		_getConfigVar $dgjjFortress false
+        FREEZECOMBO_FORTRESS_PORT=${FREEZECOMBO_PORT}
+        FREEZECOMBO_FORTRESS_USER=${FREEZECOMBO_USER}
+        FREEZECOMBO_FORTRESS_IP=${FREEZECOMBO_IP}
+        FREEZECOMBO_FORTRESS_CIPHER=${FREEZECOMBO_CIPHER}
+
+        dgjjAddressIn3=${3#*:}
+		dgjjNameIn3=${3%:*}
+		dgjjAddressIn4=${4#*:}
+		dgjjNameIn4=${4%:*}
+		if [[ ${dgjjAddressIn3} != ${dgjjNameIn3} ]]; then
+			_getConfigVar ${dgjjNameIn3}
+			let i=${#dgjjAddressIn3}-1
+			if [[ ${dgjjAddressIn3:$i:1} == '/' ]];then
+				dgjjAddressIn3=${dgjjAddressIn3%/}
+			fi
+			ssh -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "scp -r -P ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${dgjjAddressIn3} /tmp/"
+			scp -r -P ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP}:/tmp/${dgjjAddressIn3##*/} $4
+		elif [[ ${dgjjAddressIn4} != ${dgjjNameIn4} ]]; then
+			_getConfigVar ${dgjjNameIn4}
+			scp -r -P ${!FREEZECOMBO_FORTRESS_PORT} $3 ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP}:/tmp/
+			ssh -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "scp -P ${!FREEZECOMBO_PORT} /tmp/${3##*/} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${dgjjAddressIn4}"
+        else
+        	exit 1
+        fi
+        
+        return 0
+	fi
+
+	dgjjAddressIn1=${1#*:}
+	dgjjNameIn1=${1%:*}
+	dgjjAddressIn2=${2#*:}
+	dgjjNameIn2=${2%:*}
+
+	if [[ ${dgjjAddressIn1} != ${dgjjNameIn1} ]]; then
+		_getConfigVar ${dgjjNameIn1}
+		scp -r -P ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${dgjjAddressIn1} $2
+	elif [[ ${dgjjAddressIn2} != ${dgjjNameIn2} ]]; then
+		_getConfigVar ${dgjjNameIn2}
+		scp -r -P ${!FREEZECOMBO_PORT} $1 ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${dgjjAddressIn2}
+	else
+		exit 1
+	fi
+}
+
+function _dgjjAnsible() {
+	while getopts "l:" arg
+    do
+        case $arg in
+            l) dgjjLike="${OPTARG}" ;;
+            ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
+        esac
+    done
+    if [[ ! -z ${dgjjLike} ]]; then
+    	ansibleHosts=$(cat ${defaultConfigPath} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1 | grep ${dgjjLike})
+    else
+		ansibleHosts=$(echo $*)
+    fi
+	for host in ${ansibleHosts}
+	do
+		_getConfigVar ${host} false
+		echo ${host} ansible_ssh_user=${!FREEZECOMBO_USER} ansible_ssh_host=${!FREEZECOMBO_IP} ansible_ssh_port=${!FREEZECOMBO_PORT}
+	done
+	exit
+}
+
+if [[ "$1" != "completion" ]]; then
+	source dgjj completion
+fi
+
+case $1 in
+	add)
+		_dgjjAdd $(echo $* | awk '$1="";1')
+	;;
+	modify)
+		MODIFY_ALIAS=${2}
+		_dgjjModfiy $(echo $* | awk '$1=$2=$3"";1')
+	;;
+	delete)
+		_dgjjDelete $(echo $* | awk '$1="";1')
+	;;
+	version)
+		_dgjjShowVersion	
+	;;
+	find)
+		_dgjjFind $2
+	;;
+	completion)
+		complete -W "$(cat ${defaultConfigPath} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)" dgjj
+	;;
+	-h|--help)
+		_dgjjHelp
+	;;
+	--scp)
+		_dgjjScp $(echo $* | awk '$1="";1')
+	;;
+	list)
+		_dgjjList | column -t
+	;;
+	ansible)
+		_dgjjAnsible $(echo $* | awk '$1="";1')
+	;;
+	*)
+		${defaultDrive} $*
+	;;
+esac
