@@ -1,9 +1,9 @@
-# dgjj
-用于管理服务器账户的脚本
+# ssh-am
+ssh accout management
 
 ## 安装
 ```bash
-brew install gengxiankun/tap/dgjj
+brew install gengxiankun/tap/ssh-am
 ```
 > 自动填充账户别名
-> `echo "source dgjj completion" >> ~/.bash_profile`
+> `echo "source ssh-am completion" >> ~/.bash_profile`
