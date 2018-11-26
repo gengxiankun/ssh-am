@@ -141,12 +141,14 @@ function _getConfigVar() {
 	FREEZECOMBO_CIPHER=$1_cipher
 	FREEZECOMBO_TYPE=$1_type
 
+	if [[ -z ${!FREEZECOMBO_USER} ]]; then
+		echo "Invalid parameter: -$1"; exit 0
+	fi
+
 	if [[ ${!FREEZECOMBO_TYPE} == 'ga' && ${2} != false ]]; then
 		~/.composer/vendor/bin/phpga getCode secret ${!FREEZECOMBO_CIPHER} | pbcopy;echo -e "The Verification code has been copied to the clipboard, directly \033[49 CCOMMAND + V \033[0m paster."
 	elif [[ ! -z ${!FREEZECOMBO_CIPHER} && ${2} != false ]]; then
 		echo "${!FREEZECOMBO_CIPHER}" | pbcopy;echo -e "The cipher has been copied to the clipboard, directly \033[49 CCOMMAND + V \033[0m paster."
-	elif [[ ${2} != false ]]; then
-		echo "Invalid parameter: -$1"; exit 0
 	fi
 }
 
