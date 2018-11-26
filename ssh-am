@@ -271,7 +271,7 @@ case $1 in
 		_amFind $2
 	;;
 	completion)
-		complete -W "$(cat ${defaultConfigPath} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)" am
+		complete -W "$(cat ${defaultConfigPath} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)" ssh-am
 	;;
 	-h|--help)
 		_amHelp
