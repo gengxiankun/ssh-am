@@ -6,19 +6,33 @@ NAME
        ssh-am - ssh account management
 
 SYNOPSIS
-       z [-chlrtx] [regex1 regex2 ... regexn]
+       ssh-am [ COMMAND ] [ OPTION ] [ NAME ]
 
 AVAILABILITY
        bash, zsh
 
 DESCRIPTION
-       Tracks your most used directories, based on 'frecency'.
 
-       After  a  short  learning  phase, z will take you to the most 'frecent'
-       directory that matches ALL of the regexes given on the command line, in
-       order.
 
-       For example, z foo bar would match /foo/bar but not /bar/foo.
+Commands
+
+       add        新增一个账户
+
+       modify     修改一个账户
+
+       delete     删除一个账户
+
+       list       查看账户列表
+
+       find       查看账户详情
+
+       ansible    将账户数据以ansible的格式输出
+
+       completion 自动补充账户名
+
+       --scp      默认操作为ssh，指定--scp则进行scp操作
+
+       -h|--help  查看帮助
 
 OPTIONS
        -c     restrict matches to subdirectories of the current directory
