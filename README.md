@@ -6,7 +6,7 @@ ssh-am [ COMMAND ] [ OPTION ] [ NAME ]
 ## 可用性
 macOS
 
-## Commands
+## 命令
 
        add        新增一个账户
 
@@ -26,7 +26,7 @@ macOS
 
        -h|--help  查看帮助
 
-## OPTIONS
+## 选项
 
        -n  账户别名
 
@@ -40,7 +40,7 @@ macOS
 
        -t  登陆授权的类型，默认为password，如果选择谷歌二次认证的方式授权，则指定为 'ga'
 
-## EXAMPLES
+## ex
        ssh-am server_aaaa                   ssh登陆到名为 server_aaa 的服务器
 
        ssh-am --scp server_aaaa:~/demo ./   使用scp命令将 servar_aaa 服务器上的demo文件或目录拉去到本地
@@ -63,19 +63,15 @@ macOS
 
        ssh-am -h                            ssh-am 帮助信息
 
-## Installation:
+## 安装
 ```bash
 brew install gengxiankun/tap/ssh-am
 ```
 > Tab Completion: echo "source ssh-am completion" >> ~/.bash_profile
 
-## ENVIRONMENT
+## 变量
 - 变量 $defaultDrive 默认值为 _amSsh，表明默认使用ssh命令。
 - 变量 $defaultConfigPath 默认值为 ~/Documents/.amdata，他是存放数据的变量。
 
-## FILES
+## 文件
 数据存放在 ~/Documents/.amdata，如果你开通了 iCloud 同步桌面于文稿文件夹同步，ssh-ma的账户信息将跟随着你的iCloud账户同步。
-
-
-
-ssh-am                                gengxiankun 2018                             SSH_AM(1)
