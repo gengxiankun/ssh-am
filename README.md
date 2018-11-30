@@ -1,20 +1,12 @@
-SSH-AM(1)                             User Commands                            SSH-AM(1)
+# ssh-am - ssh account management
+      
+## 概要
+ssh-am [ COMMAND ] [ OPTION ] [ NAME ]
 
+## 可用性
+macOS
 
-
-NAME
-       ssh-am - ssh account management
-
-SYNOPSIS
-       ssh-am [ COMMAND ] [ OPTION ] [ NAME ]
-
-AVAILABILITY
-       bash, zsh
-
-DESCRIPTION
-
-
-Commands
+## Commands
 
        add        新增一个账户
 
@@ -34,7 +26,7 @@ Commands
 
        -h|--help  查看帮助
 
-OPTIONS
+## OPTIONS
 
        -n  账户别名
 
@@ -48,7 +40,7 @@ OPTIONS
 
        -t  登陆授权的类型，默认为password，如果选择谷歌二次认证的方式授权，则指定为 'ga'
 
-EXAMPLES
+## EXAMPLES
        ssh-am server_aaaa                   ssh登陆到名为 server_aaa 的服务器
 
        ssh-am --scp server_aaaa:~/demo ./   使用scp命令将 servar_aaa 服务器上的demo文件或目录拉去到本地
@@ -71,24 +63,18 @@ EXAMPLES
 
        ssh-am -h                            ssh-am 帮助信息
 
-NOTES
-   Installation:
-       brew install gengxiankun/tap/ssh-am
+## Installation:
+```bash
+brew install gengxiankun/tap/ssh-am
+```
+> Tab Completion: echo "source ssh-am completion" >> ~/.bash_profile
 
-   Tab Completion:
-       echo "source ssh-am completion" >> ~/.bash_profile
+## ENVIRONMENT
+- 变量 $defaultDrive 默认值为 _amSsh，表明默认使用ssh命令。
+- 变量 $defaultConfigPath 默认值为 ~/Documents/.amdata，他是存放数据的变量。
 
-ENVIRONMENT
-       变量 $defaultDrive 默认值为 _amSsh，表明默认使用ssh命令。
-
-       变量 $defaultConfigPath 默认值为 ~/Documents/.amdata，他是存放数据的变量。
-
-FILES
-       数据存放在 ~/Documents/.amdata，如果你开通了 iCloud 同步桌面于文稿文件夹同步，ssh-ma的账户信息将跟随着你的iCloud账户同步。
-
-SEE ALSO
-
-       Please file bugs at https://github.com/gengxiankun/ssh-am/
+## FILES
+数据存放在 ~/Documents/.amdata，如果你开通了 iCloud 同步桌面于文稿文件夹同步，ssh-ma的账户信息将跟随着你的iCloud账户同步。
 
 
 
