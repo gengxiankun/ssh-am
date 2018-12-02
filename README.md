@@ -4,7 +4,7 @@ SSH Account Management
 ## 可用性
 ![Get it on macOS](http://jaywcjlove.github.io/sb/download/macos.svg)
 
-#'# 安装
+## 安装
 ```bash
 brew install gengxiankun/tap/ssh-am
 ```
