@@ -2,7 +2,7 @@
 SSH Account Management
 
 ## 可用性
-![macOS](http://jaywcjlove.github.io/sb/download/macos.svg)
+
 
 ## 安装
 ```bash
