@@ -1,5 +1,8 @@
 # ssh-am
 SSH Account Management 
+ssh-am 是一款 macOS Command Line Tools，用于管理服务器的账户信息，内置ssh和scp命令。并支持多种登陆方式的自动化授权（包括google二次认证的授权方式）。
+
+[English](README.md) | [中文](README-zh.md)
 
 ## 可用性
 ![Get it on macOS](http://jaywcjlove.github.io/sb/download/macos.svg)
