@@ -1,4 +1,5 @@
-# ssh-am - ssh account management
+# ssh-am
+ssh account management
 
 ## 可用性
 macOS
