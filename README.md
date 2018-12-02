@@ -7,7 +7,7 @@
 ```bash
 brew install gengxiankun/tap/ssh-am
 ```
-> Tab Completion: echo "source ssh-am completion" >> ~/.bash_profile
+> Tab 补全: echo "source ssh-am completion" >> ~/.bash_profile
 
 ## 命令
 
