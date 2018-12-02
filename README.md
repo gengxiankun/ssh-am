@@ -1,77 +1,79 @@
 # ssh-am
 SSH Account Management 
 
-## 可用性
+[English](README.md) | [中文](README-zh.md)
+
+## Avatlability
 ![Get it on macOS](http://jaywcjlove.github.io/sb/download/macos.svg)
 
-## 安装
+## Installation
 ```bash
 brew install gengxiankun/tap/ssh-am
 ```
-> Tab 补全: echo "source ssh-am completion" >> ~/.bash_profile
+> Tab Completion: echo "source ssh-am completion" >> ~/.bash_profile
 
-## 命令
+## Commands
 
-       add        新增一个账户
+       add        add an account
 
-       modify     修改一个账户
+       modify     modify an account
 
-       delete     删除一个账户
+       delete     delete an account
 
-       list       查看账户列表
+       list       view account list
 
-       find       查看账户详情
+       find       view account details
 
-       ansible    将账户数据以ansible的格式输出
+       ansible    export account data in ansible format
 
-       completion 自动补充账户名
+       completion automatically replenish account name
 
-       --scp      默认操作为ssh，指定--scp则进行scp操作
+       --scp      the default operation is ssh, and --scp is specified for scp operation.
 
-       -h|--help  查看帮助
+       -h|--help  view help
 
-## 选项
+## Options
 
-       -n  账户别名
+       -n  account alias
 
        -i  IP
 
-       -u  用户名
+       -u  username
 
-       -p  登陆密码/谷歌二次认证密钥
+       -p  login password / google secondary authentication key
 
-       -P  端口号
+       -P  the port number
 
-       -t  登陆授权的类型，默认为password，如果选择谷歌二次认证的方式授权，则指定为 'ga'
+       -t  the type of login authorization, the default is password. If you choose Google secondary authentication, you can specify it as 'ga'
 
-## 如何使用
+## How to use
 
-### ssh登陆到名为 server_aaa 的服务器
+### Log in to the server named server_aaa using ssh
 `ssh-am server_aaaa`
 
-### 使用scp命令将 servar_aaa 服务器上的demo文件或目录拉去到本地
+### Use the scp command to pull the demo file or directory on the servar_aaa server to the local
 `ssh-am --scp server_aaaa:~/demo ./`
 
-### 添加名为 server_bbb 的服务器
+### Add a server named server_bbb
 `ssh-am add -n server_bbb -uroot -i 192.168.1.1 -p123123 `
 
-### 修改 server_bbb 的密码
+### Modify the password for server_bbb
 `ssh-am modify server_bbb -pbbb123123`
 
-### 删除名为 server_bbb 的服务器账户
+### Delete the server account named server_bbb
 `ssh-am delete server_bbb`
 
-### 查看以添加的服务器列表
+### View to add a list of servers
 `ssh-am list`
 
-### 查看名为 server_aaa 的服务器详细信息（注意，它会展示密码）
+### View the server details named server_aaa (note that it will display the password)
 `ssh-am find server_aaa`
 
-### 将账户数据以ansible的格式输出
+### Export account data in ansible format
 `ssh-am ansible`
 
-### 实现自动填充服务器名称
+### Implement autofill server name
 `echo "source ssh-am completion" >> ~/.bash_profile`
 
-### ssh-am 帮助信息
+### Ssh-am help information
 `ssh-am -h` or `ssh-am --help`
