@@ -1,7 +1,8 @@
 # ssh-am
- SSH Account Management 
+SSH Account Management 
 
 ## 可用性
+![Get it on macOS](http://jaywcjlove.github.io/sb/download/macos.svg)
 
 ## 安装
 ```bash
@@ -43,25 +44,34 @@ brew install gengxiankun/tap/ssh-am
 
        -t  登陆授权的类型，默认为password，如果选择谷歌二次认证的方式授权，则指定为 'ga'
 
-## 例子
-       ssh-am server_aaaa                   ssh登陆到名为 server_aaa 的服务器
+## 如何使用
 
-       ssh-am --scp server_aaaa:~/demo ./   使用scp命令将 servar_aaa 服务器上的demo文件或目录拉去到本地
+### ssh登陆到名为 server_aaa 的服务器
+`ssh-am server_aaaa`
 
-       ssh-am add -n server_bbb -uroot -i 192.168.1.1 -p123123 
-                                            添加名为 server_bbb 的服务器
+### 使用scp命令将 servar_aaa 服务器上的demo文件或目录拉去到本地
+`ssh-am --scp server_aaaa:~/demo ./`
 
-       ssh-am modify server_bbb -pbbb123123 修改 server_bbb 的密码
+### 添加名为 server_bbb 的服务器
+`ssh-am add -n server_bbb -uroot -i 192.168.1.1 -p123123 `
 
-       ssh-am delete server_bbb             删除名为 server_bbb 的服务器账户
+### 修改 server_bbb 的密码
+`ssh-am modify server_bbb -pbbb123123`
 
-       ssh-am list                          查看以添加的服务器列表
+### 删除名为 server_bbb 的服务器账户
+`ssh-am delete server_bbb`
 
-       ssh-am find server_aaa               查看名为 server_aaa 的服务器详细信息（注意，它会展示密码）
+### 查看以添加的服务器列表
+`ssh-am list`
 
-       ssh-am ansible                       将账户数据以ansible的格式输出
+### 查看名为 server_aaa 的服务器详细信息（注意，它会展示密码）
+`ssh-am find server_aaa`
 
-       echo "source ssh-am completion" >> ~/.bash_profile      
-                                            实现自动填充服务器名称
+### 将账户数据以ansible的格式输出
+`ssh-am ansible`
 
-       ssh-am -h                            ssh-am 帮助信息
+### 实现自动填充服务器名称
+`echo "source ssh-am completion" >> ~/.bash_profile`
+
+### ssh-am 帮助信息
+`ssh-am -h` or `ssh-am --help`
