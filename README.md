@@ -1,12 +1,9 @@
-# ssh-am
+# SSH-AM
 SSH Account Management 
 
 ssh-am is a macOS Command Line Tools for managing server account information, built-in ssh and scp commands. And support for a variety of login methods of automated authorization (including the authorization method of google secondary authentication).
 
 [English](README.md) | [中文](README-zh.md)
-
-## Avatlability
-![Get it on macOS](http://jaywcjlove.github.io/sb/download/macos.svg)
 
 ## Installation
 ```bash
