@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# author: 耿贤坤 <gengxiankun@126.com>
+# since: 2017-06-29
 # set -x
 defaultDrive='_amSsh'
 defaultConfigPath=~/Documents/.amdata
@@ -59,6 +61,17 @@ function _amAdd() {
 	        ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
         esac
 	done
+
+	if [[ ${amType} == 'ga' ]]; then
+		if [[ ! `which composer` ]]; then
+			echo 'install composer...'
+			curl -sSL https://getcomposer.org/installer | php
+		fi
+		if [[ ! `composer global show gengxiankun/phpga` ]]; then
+			echo 'install phpga via composer...'
+			composer global require gengxiankun/phpga:@dev
+		fi
+	fi
 	echo "# [${amName}]" >> ${defaultConfigPath}
 	echo "${amName}_user='${amUser}'" >> ${defaultConfigPath}
 	echo "${amName}_ip='${amIp}'" >> ${defaultConfigPath}
@@ -95,7 +108,7 @@ function _amModfiy() {
 		sed -i "" "s/${FREEZECOMBO_PORT}/${amName}_port/g" ${defaultConfigPath}
 		sed -i "" "s/${FREEZECOMBO_CIPHER}/${amName}_cipher/g" ${defaultConfigPath}
 		sed -i "" "s/${FREEZECOMBO_TYPE}/${amName}_type/g" ${defaultConfigPath}
-  	else
+	else
 		amName=${MODIFY_ALIAS}
 	fi
 
@@ -128,11 +141,11 @@ function _amFind() {
 function _amDelete() {
 	if [[ -z ${1} ]]; then return 1; fi
 	sed -i "" "/\[${1}\]/d" ${defaultConfigPath}
-	sed -i "" "/${1}_user/d" ${defaultConfigPath}
-	sed -i "" "/${1}_ip/d" ${defaultConfigPath}
-	sed -i "" "/${1}_port/d" ${defaultConfigPath}
-	sed -i "" "/${1}_cipher/d" ${defaultConfigPath}
-	sed -i "" "/${1}_type/d" ${defaultConfigPath}
+	sed -i "" "/^${1}_user/d" ${defaultConfigPath}
+	sed -i "" "/^${1}_ip/d" ${defaultConfigPath}
+	sed -i "" "/^${1}_port/d" ${defaultConfigPath}
+	sed -i "" "/^${1}_cipher/d" ${defaultConfigPath}
+	sed -i "" "/^${1}_type/d" ${defaultConfigPath}
 }
 
 function _getConfigVar() {
@@ -148,7 +161,7 @@ function _getConfigVar() {
 	fi
 
 	if [[ ${!FREEZECOMBO_TYPE} == 'ga' && ${2} != false ]]; then
-		~/.composer/vendor/bin/phpga getCode secret ${!FREEZECOMBO_CIPHER} | pbcopy;echo -e "The Verification code has been copied to the clipboard, directly \033[49 CCOMMAND + V \033[0m paster."
+		sudo ~/.composer/vendor/bin/phpga getCode secret ${!FREEZECOMBO_CIPHER} | pbcopy;echo -e "The Verification code has been copied to the clipboard, directly \033[49 CCOMMAND + V \033[0m paster."
 	elif [[ ! -z ${!FREEZECOMBO_CIPHER} && ${2} != false ]]; then
 		echo "${!FREEZECOMBO_CIPHER}" | pbcopy;echo -e "The cipher has been copied to the clipboard, directly \033[49 CCOMMAND + V \033[0m paster."
 	fi
