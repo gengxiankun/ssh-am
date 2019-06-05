@@ -135,7 +135,7 @@ function _amModfiy() {
 
 function _amFind() {
 	_getConfigVar $1 false
-	echo -e "\033[4m ${1} \033[0m \033[32;49;1m [User] \033[39;49;0m ${!FREEZECOMBO_USER} \033[32;49;1m [IP] \033[39;49;0m ${!FREEZECOMBO_IP} \033[32;49;1m [Port] \033[39;49;0m ${!FREEZECOMBO_PORT} \033[32;49;1m [Password/Cipher] \033[39;49;0m ${!FREEZECOMBO_CIPHER}"
+	echo -e "# ${1} \n - user: ${!FREEZECOMBO_USER} \n - ip: ${!FREEZECOMBO_IP} \n - port: ${!FREEZECOMBO_PORT} \n - password/cipher: ${!FREEZECOMBO_CIPHER} \n - auth_type: ${!FREEZECOMBO_TYPE:-normal}"
 }
 
 function _amDelete() {
