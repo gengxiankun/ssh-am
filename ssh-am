@@ -3,7 +3,9 @@
 # since: 2017-06-29
 # set -x
 defaultDrive='_amSsh'
-defaultConfigPath=~/Documents/.amdata
+defaultConfigPath=~/Documents/.ssh-am
+defaultKeyConfigPath=${defaultConfigPath}/key
+defaultConfigFile=${defaultConfigPath}/am.data
 
 function _amHelp() {
   cat <<-EOF
@@ -31,14 +33,21 @@ EOF
 }
 
 # initialization
-if [[ ! -e ${defaultConfigPath} ]]; then
-	echo "starting initialization..."
-	touch ${defaultConfigPath}
-	echo "#.am.data" > ${defaultConfigPath}
+if [[ ! -d ${defaultConfigPath} ]]; then
+	mkdir -vp ${defaultConfigPath}
+fi
+
+if [[ ! -d ${defaultKeyConfigPath} ]]; then
+	mkdir -vp ${defaultKeyConfigPath}
+fi
+
+if [[ ! -e ${defaultConfigFile} ]]; then
+	touch ${defaultConfigFile}
+	echo "#am.data" > ${defaultConfigFile}
 fi
 
 function _amList() {
-	varList=$(cat ${defaultConfigPath} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)
+	varList=$(cat ${defaultConfigFile} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)
 	echo -e "NAME USER IP PORT TYPE"
 	for var in $varList
 	do
@@ -49,7 +58,7 @@ function _amList() {
 
 function _amAdd() {
 	# getopts parameter analysis
-	while getopts "n:u:i:p:P:t:" arg
+	while getopts "n:u:i:p:P:t:k:" arg
 	do
         case $arg in
 	        n) amName="${OPTARG}" ;;
@@ -58,6 +67,7 @@ function _amAdd() {
 			P) amPort="${OPTARG}" ;;
 			p) amCipher="${OPTARG}" ;;
 			t) amType="${OPTARG:-password}" ;;
+			k) amKey="${OPTARG}" ;;
 	        ?) echo "Invalid option: -$OPTARG"; exit 0 ;;
         esac
 	done
@@ -72,12 +82,22 @@ function _amAdd() {
 			composer global require gengxiankun/phpga:@dev
 		fi
 	fi
-	echo "# [${amName}]" >> ${defaultConfigPath}
-	echo "${amName}_user='${amUser}'" >> ${defaultConfigPath}
-	echo "${amName}_ip='${amIp}'" >> ${defaultConfigPath}
-	echo "${amName}_port='${amPort:-22}'" >> ${defaultConfigPath}
-	echo "${amName}_cipher='${amCipher}'" >> ${defaultConfigPath}
-	echo "${amName}_type='${amType}'" >> ${defaultConfigPath}
+
+	if [[ ${amType} == 'key' ]]; then
+		if [[ ! -e ${amKey} ]]; then
+			echo "Invalid key path"; exit 0
+		fi
+
+		cp ${amKey} ${defaultKeyConfigPath}
+		amKey=`echo ${defaultKeyConfigPath}/${amKey##*/}`
+	fi
+	echo "# [${amName}]" >> ${defaultConfigFile}
+	echo "${amName}_user='${amUser}'" >> ${defaultConfigFile}
+	echo "${amName}_ip='${amIp}'" >> ${defaultConfigFile}
+	echo "${amName}_port='${amPort:-22}'" >> ${defaultConfigFile}
+	echo "${amName}_cipher='${amCipher}'" >> ${defaultConfigFile}
+	echo "${amName}_type='${amType}'" >> ${defaultConfigFile}
+	echo "${amName}_key='${amKey}'" >> ${defaultConfigFile}
 }
 
 function _amModfiy() {
@@ -102,34 +122,34 @@ function _amModfiy() {
 	fi
 
 	if [[ ! -z ${amName} ]]; then
-		sed -i "" "s/\[$MODIFY_ALIAS\]/[$amName]/g" ${defaultConfigPath}
-		sed -i "" "s/${FREEZECOMBO_USER}/${amName}_user/g" ${defaultConfigPath}
-		sed -i "" "s/${FREEZECOMBO_IP}/${amName}_ip/g" ${defaultConfigPath}
-		sed -i "" "s/${FREEZECOMBO_PORT}/${amName}_port/g" ${defaultConfigPath}
-		sed -i "" "s/${FREEZECOMBO_CIPHER}/${amName}_cipher/g" ${defaultConfigPath}
-		sed -i "" "s/${FREEZECOMBO_TYPE}/${amName}_type/g" ${defaultConfigPath}
+		sed -i "" "s/\[$MODIFY_ALIAS\]/[$amName]/g" ${defaultConfigFile}
+		sed -i "" "s/${FREEZECOMBO_USER}/${amName}_user/g" ${defaultConfigFile}
+		sed -i "" "s/${FREEZECOMBO_IP}/${amName}_ip/g" ${defaultConfigFile}
+		sed -i "" "s/${FREEZECOMBO_PORT}/${amName}_port/g" ${defaultConfigFile}
+		sed -i "" "s/${FREEZECOMBO_CIPHER}/${amName}_cipher/g" ${defaultConfigFile}
+		sed -i "" "s/${FREEZECOMBO_TYPE}/${amName}_type/g" ${defaultConfigFile}
 	else
 		amName=${MODIFY_ALIAS}
 	fi
 
 	if [[ ! -z ${amUser} ]]; then
-		sed -i "" "s/^${amName}_user.*$/${amName}_user='${amUser}'/g" ${defaultConfigPath}
+		sed -i "" "s/^${amName}_user.*$/${amName}_user='${amUser}'/g" ${defaultConfigFile}
 	fi
 
 	if [[ ! -z ${amIp} ]]; then
-		sed -i "" "s/^${amName}_ip.*$/${amName}_ip='${amIp}'/g" ${defaultConfigPath}
+		sed -i "" "s/^${amName}_ip.*$/${amName}_ip='${amIp}'/g" ${defaultConfigFile}
 	fi
 
 	if [[ ! -z ${amPort} ]]; then
-		sed -i "" "s/^${amName}_port.*$/${amName}_port='${amPort}'/g" ${defaultConfigPath}
+		sed -i "" "s/^${amName}_port.*$/${amName}_port='${amPort}'/g" ${defaultConfigFile}
 	fi
 
 	if [[ ! -z ${amCipher} ]]; then
-		sed -i "" "s/^${amName}_cipher.*$/${amName}_cipher='${amCipher}'/g" ${defaultConfigPath}
+		sed -i "" "s/^${amName}_cipher.*$/${amName}_cipher='${amCipher}'/g" ${defaultConfigFile}
 	fi
 
 	if [[ ! -z ${amType} ]]; then
-		sed -i "" "s/^${amName}_type.*$/${amName}_type='${amType}'/g" ${defaultConfigPath}
+		sed -i "" "s/^${amName}_type.*$/${amName}_type='${amType}'/g" ${defaultConfigFile}
 	fi
 }
 
@@ -140,21 +160,23 @@ function _amFind() {
 
 function _amDelete() {
 	if [[ -z ${1} ]]; then return 1; fi
-	sed -i "" "/\[${1}\]/d" ${defaultConfigPath}
-	sed -i "" "/^${1}_user/d" ${defaultConfigPath}
-	sed -i "" "/^${1}_ip/d" ${defaultConfigPath}
-	sed -i "" "/^${1}_port/d" ${defaultConfigPath}
-	sed -i "" "/^${1}_cipher/d" ${defaultConfigPath}
-	sed -i "" "/^${1}_type/d" ${defaultConfigPath}
+	sed -i "" "/\[${1}\]/d" ${defaultConfigFile}
+	sed -i "" "/^${1}_user/d" ${defaultConfigFile}
+	sed -i "" "/^${1}_ip/d" ${defaultConfigFile}
+	sed -i "" "/^${1}_port/d" ${defaultConfigFile}
+	sed -i "" "/^${1}_cipher/d" ${defaultConfigFile}
+	sed -i "" "/^${1}_type/d" ${defaultConfigFile}
+	sed -i "" "/^${1}_key/d" ${defaultConfigFile}
 }
 
 function _getConfigVar() {
-	source ${defaultConfigPath}
+	source ${defaultConfigFile}
 	FREEZECOMBO_USER=$1_user
 	FREEZECOMBO_IP=$1_ip
 	FREEZECOMBO_PORT=$1_port
 	FREEZECOMBO_CIPHER=$1_cipher
 	FREEZECOMBO_TYPE=$1_type
+	FREEZECOMBO_KEY=$1_key
 
 	if [[ -z ${!FREEZECOMBO_USER} ]]; then
 		echo "Invalid parameter: -$1"; exit 0
@@ -183,14 +205,19 @@ function _amSsh() {
 		FREEZECOMBO_FORTRESS_USER=${FREEZECOMBO_USER}
 		FREEZECOMBO_FORTRESS_IP=${FREEZECOMBO_IP}
 		FREEZECOMBO_FORTRESS_CIPHER=${FREEZECOMBO_CIPHER}
-		
+		FREEZECOMBO_FORTRESS_KEY=${FREEZECOMBO_KEY}
+
 		_getConfigVar $3
 		ssh -t -p ${!FREEZECOMBO_FORTRESS_PORT} ${!FREEZECOMBO_FORTRESS_USER}@${!FREEZECOMBO_FORTRESS_IP} "ssh -p ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}"
 		exit 0
 	fi
 
 	_getConfigVar $1
-	ssh -p ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}
+	if [[ ${!FREEZECOMBO_TYPE} == 'key' ]]; then
+		ssh -p ${!FREEZECOMBO_PORT} -i ${!FREEZECOMBO_KEY} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}
+	else
+		ssh -p ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}
+	fi
 }
 
 function _amScp() {
@@ -258,7 +285,7 @@ function _amAnsible() {
         esac
     done
     if [[ ! -z ${amLike} ]]; then
-    	ansibleHosts=$(cat ${defaultConfigPath} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1 | grep ${amLike})
+    	ansibleHosts=$(cat ${defaultConfigFile} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1 | grep ${amLike})
     else
 		ansibleHosts=$(echo $*)
     fi
@@ -288,7 +315,7 @@ case $1 in
 		_amFind $2
 	;;
 	completion)
-		complete -W "$(cat ${defaultConfigPath} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)" ssh-am
+		complete -W "$(cat ${defaultConfigFile} | grep "# \[" | cut -d'[' -f 2 | cut -d']' -f 1)" ssh-am
 	;;
 	-h|--help)
 		_amHelp
