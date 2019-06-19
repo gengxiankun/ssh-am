@@ -44,6 +44,8 @@ brew install gengxiankun/tap/ssh-am
        -P  端口号
 
        -t  登陆授权的类型，默认为password，如果选择谷歌二次认证的方式授权，则指定为 'ga'
+       
+       -k  通过-t 'key'指定密钥方式授权，此参数传密钥地址
 
 ## 如何使用
 
