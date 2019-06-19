@@ -44,6 +44,8 @@ brew install gengxiankun/tap/ssh-am
        -P  the port number
 
        -t  the type of login authorization, the default is password. If you choose Google secondary authentication, you can specify it as 'ga'
+       
+       -k  specify the key mode authorization by -t 'key'. This parameter passes the key address.
 
 ## How to use
 
