@@ -28,9 +28,9 @@ Options:
   -u  username
   -p  login password / google secondary authentication key
   -P  the port number
-  -t  the type of login authorization, the default is password. If you choose Google secondary authentication, you can specify it as 'ga'
-EOF
   -k  specify the key mode authorization by -t 'key'. This parameter passes the key address
+  -t  ga、key
+EOF
 }
 
 # initialization
@@ -271,7 +271,11 @@ function _amScp() {
 		scp -r -P ${!FREEZECOMBO_PORT} ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${amAddressIn1} $2
 	elif [[ ${amAddressIn2} != ${amNameIn2} ]]; then
 		_getConfigVar ${amNameIn2}
-		scp -r -P ${!FREEZECOMBO_PORT} $1 ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${amAddressIn2}
+		if [[ ${!FREEZECOMBO_TYPE} == 'key' ]]; then
+			scp -r -i ${!FREEZECOMBO_KEY} -P ${!FREEZECOMBO_PORT} $1 ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${amAddressIn2}
+		else
+			scp -r -P ${!FREEZECOMBO_PORT} $1 ${!FREEZECOMBO_USER}@${!FREEZECOMBO_IP}:${amAddressIn2}
+		fi
 	else
 		exit 1
 	fi
