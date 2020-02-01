@@ -85,7 +85,7 @@ function _amAdd() {
 	fi
 
 	if [[ ${amType} == 'key' ]]; then
-		if [[ ! -e ${amKey} ]]; then
+		if [ ! -e ${amKey} ]; then
 			echo "Invalid key path"; exit 0
 		fi
 
