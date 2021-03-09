@@ -47,7 +47,7 @@ brew install gengxiankun/tap/ssh-am
        
        -k  通过-t 'key'指定密钥方式授权，此参数传密钥地址
 
-## 如何使用
+## 用例
 
 ### ssh登陆到名为 server_aaa 的服务器
 `ssh-am server_aaaa`
